@@ -1,0 +1,50 @@
+name: Feature Request
+description: Suggest a new pattern or improvement
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement!
+  - type: dropdown
+    id: type
+    attributes:
+      label: Request Type
+      options:
+        - New Pattern
+        - New Language Implementation
+        - Pattern Improvement
+        - Documentation Enhancement
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: pattern
+    attributes:
+      label: Pattern Name
+      placeholder: e.g., Flyweight, Mediator, etc.
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the pattern or improvement you'd like to see.
+    validations:
+      required: true
+  - type: textarea
+    id: usecase
+    attributes:
+      label: Use Case
+      description: How would this be used in mobile development?
+    validations:
+      required: true
+  - type: textarea
+    id: examples
+    attributes:
+      label: Code Examples
+      description: Any reference implementations or pseudocode.
+      render: swift
+    validations:
+      required: false
