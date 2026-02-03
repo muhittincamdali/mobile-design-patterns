@@ -1,43 +1,47 @@
 ## Description
 
-<!-- What changes does this PR introduce? -->
+<!-- Describe your changes in detail -->
+
+## Related Issue
+
+<!-- Please link to the issue here using #issue_number -->
+
+Fixes #
 
 ## Type of Change
 
-- [ ] New pattern
-- [ ] Code example addition
-- [ ] Bug fix (incorrect code)
-- [ ] Documentation improvement
-- [ ] Diagram addition
-- [ ] Other
+<!-- Put an `x` in all the boxes that apply -->
 
-## Pattern Category
-
-- [ ] Creational
-- [ ] Structural
-- [ ] Behavioral
-- [ ] Architectural
-- [ ] Mobile-Specific
-
-## Platforms
-
-- [ ] iOS (Swift)
-- [ ] Android (Kotlin)
-- [ ] Cross-platform
+- [ ] 🐛 Bug fix (non-breaking change which fixes an issue)
+- [ ] ✨ New feature (non-breaking change which adds functionality)
+- [ ] 💥 Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] 🧭 New navigation pattern
+- [ ] 📝 Documentation update
+- [ ] 🔧 Refactoring (no functional changes)
 
 ## Checklist
 
-- [ ] Code examples compile
-- [ ] Follows the pattern template
-- [ ] Includes when to use/avoid
-- [ ] Clear explanations provided
-- [ ] Diagrams included (if applicable)
+<!-- Put an `x` in all the boxes that apply -->
 
-## Related Issues
+- [ ] My code follows the project's style guidelines
+- [ ] I have performed a self-review of my own code
+- [ ] I have tested navigation flows thoroughly
+- [ ] I have made corresponding changes to the documentation
+- [ ] My changes generate no new warnings
+- [ ] I have added tests that prove my fix is effective or that my feature works
+- [ ] New and existing unit tests pass locally with my changes
 
-<!-- Fixes #123 -->
+## Navigation Scenarios Tested
 
-## Testing
+<!-- Put an `x` in all the boxes that apply -->
 
-- [ ] iOS code tested on Xcode 16+
-- [ ] Android code tested on Android Studio
+- [ ] Push/Pop navigation
+- [ ] Modal presentation
+- [ ] Tab switching
+- [ ] Deep link handling
+- [ ] Back navigation
+- [ ] State restoration
+
+## Additional Notes
+
+<!-- Add any additional notes for reviewers -->

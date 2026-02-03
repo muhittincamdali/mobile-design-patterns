@@ -8,18 +8,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Comprehensive design patterns catalog
-- iOS and Android implementations
-- Code examples and use cases
-- Decision flowcharts
+- visionOS navigation support
 
-## [1.0.0] - 2025-01-01
+## [1.0.0] - 2024-01-15
 
 ### Added
-- Initial pattern collection
-- Creational, Structural, Behavioral patterns
-- Mobile-specific patterns
-- Implementation guidelines
+- Type-safe navigation with compile-time checks
+- SwiftUI NavigationStack integration
+- Deep linking support with URL parsing
+- Tab bar coordination
+- Modal presentation handling
+- Navigation state persistence
+- Route parameters with type safety
+- Navigation interceptors (guards)
+- Animated transitions
+- Back stack management
+- Child router support (coordinator pattern)
 
-[Unreleased]: https://github.com/muhittincamdali/mobile-design-patterns/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/muhittincamdali/mobile-design-patterns/releases/tag/v1.0.0
+### Features
+- Zero dependencies
+- Protocol-oriented design
+- Full async/await support
+
+[Unreleased]: https://github.com/muhittincamdali/SwiftRouter/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/muhittincamdali/SwiftRouter/releases/tag/v1.0.0
