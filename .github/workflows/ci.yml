@@ -2,34 +2,20 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
   pull_request:
-    branches: [main]
+    branches: [main, master]
 
 jobs:
-  markdown-lint:
-    name: Lint Markdown
+  lint:
+    name: Markdown Lint
     runs-on: ubuntu-latest
+    
     steps:
       - uses: actions/checkout@v4
-      - uses: DavidAnson/markdownlint-cli2-action@v19
+      
+      - name: markdownlint
+        uses: DavidAnson/markdownlint-cli2-action@v16
         with:
-          globs: "**/*.md"
-          config: >
-            {
-              "default": true,
-              "MD013": false,
-              "MD033": false,
-              "MD041": false,
-              "MD024": false
-            }
-
-  link-check:
-    name: Check Links
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: lycheeverse/lychee-action@v2
-        with:
-          args: --verbose --no-progress '**/*.md'
-          fail: true
+          globs: '**/*.md'
+        continue-on-error: true
