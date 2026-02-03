@@ -1,84 +1,76 @@
 # Contributing to Mobile Design Patterns
 
-First off, thanks for taking the time to contribute! 🎉
+Thank you for your interest in contributing! 🎉
 
-## How Can I Contribute?
+## How to Contribute
 
-### Reporting Bugs
+### Adding New Patterns
 
-- Use the [Bug Report](https://github.com/muhittincamdali/mobile-design-patterns/issues/new?template=bug_report.yml) template
-- Include the pattern name, category, and language
-- Provide code snippets that demonstrate the issue
+1. Ensure the pattern is well-established
+2. Provide clear explanation
+3. Include code examples for both iOS and Android
+4. Add use cases and when to use/avoid
 
-### Suggesting New Patterns
+### Improving Existing Content
 
-- Use the [Feature Request](https://github.com/muhittincamdali/mobile-design-patterns/issues/new?template=feature_request.yml) template
-- Explain why the pattern is relevant to mobile development
-- Include at least one real-world use case
+- Fix errors or unclear explanations
+- Add missing code examples
+- Improve diagrams
+- Update for latest platform versions
 
-### Submitting Pull Requests
+### Submitting Changes
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/new-pattern`)
-3. Follow the existing file structure for pattern files
-4. Include implementations in all three languages (Swift, Dart, TypeScript)
-5. Add a Mermaid UML diagram
-6. Commit your changes (`git commit -m 'feat: add mediator pattern'`)
-7. Push to the branch (`git push origin feature/new-pattern`)
-8. Open a Pull Request
+2. Create a feature branch (`git checkout -b pattern/observer-improvement`)
+3. Make your changes
+4. Commit (`git commit -m 'Add: observer pattern iOS example'`)
+5. Push (`git push origin pattern/observer-improvement`)
+6. Open a Pull Request
 
-## Pattern File Structure
-
-Every pattern file must include:
+## Pattern Template
 
 ```markdown
-# Pattern Name
+## Pattern Name
 
-## Intent
-## Problem
-## Solution
-## UML Diagram (Mermaid)
-## Swift Implementation
-## Dart Implementation
-## TypeScript Implementation
-## When to Use
-## Real-World Examples
+### Intent
+Brief description of what the pattern does
+
+### Problem
+What problem does it solve?
+
+### Solution
+How does it solve the problem?
+
+### Structure
+UML or diagram
+
+### Implementation
+
+#### iOS (Swift)
+\`\`\`swift
+// Code example
+\`\`\`
+
+#### Android (Kotlin)
+\`\`\`kotlin
+// Code example
+\`\`\`
+
+### When to Use
+- Scenario 1
+- Scenario 2
+
+### When to Avoid
+- Anti-pattern scenario
 ```
 
-## Code Style
+## Code Guidelines
 
-### Swift
-- Follow [Swift API Design Guidelines](https://www.swift.org/documentation/api-design-guidelines/)
-- Use `final class` where appropriate
-- Prefer `struct` over `class` when possible
-- Use Swift concurrency (`async/await`) for concurrency patterns
-
-### Dart
-- Follow [Effective Dart](https://dart.dev/effective-dart)
-- Use null safety
-- Prefer `final` variables
-- Use factory constructors where appropriate
-
-### TypeScript
-- Use strict mode
-- Prefer interfaces over type aliases for object shapes
-- Use generics where it improves reusability
-- Include proper type annotations
-
-## Commit Messages
-
-Follow [Conventional Commits](https://www.conventionalcommits.org/):
-
-- `feat:` new pattern or implementation
-- `fix:` bug fix in existing code
-- `docs:` documentation only changes
-- `refactor:` code restructuring
-- `style:` formatting changes
-
-## Code of Conduct
-
-Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before contributing.
+- Working, compilable code
+- Clear comments
+- Follow platform conventions
+- Include Swift 6+ / Kotlin 2+ syntax
 
 ## Questions?
 
-Open a [discussion](https://github.com/muhittincamdali/mobile-design-patterns/discussions) or reach out via issues.
+Open an issue for discussion!

@@ -1,27 +1,43 @@
 ## Description
 
-Brief description of the changes.
+<!-- What changes does this PR introduce? -->
 
 ## Type of Change
 
 - [ ] New pattern
-- [ ] Pattern improvement
-- [ ] Bug fix
-- [ ] Documentation update
-- [ ] Code quality improvement
+- [ ] Code example addition
+- [ ] Bug fix (incorrect code)
+- [ ] Documentation improvement
+- [ ] Diagram addition
+- [ ] Other
 
-## Pattern Details (if applicable)
+## Pattern Category
 
-- **Pattern Name**:
-- **Category**:
-- **Languages**: Swift / Dart / TypeScript
+- [ ] Creational
+- [ ] Structural
+- [ ] Behavioral
+- [ ] Architectural
+- [ ] Mobile-Specific
+
+## Platforms
+
+- [ ] iOS (Swift)
+- [ ] Android (Kotlin)
+- [ ] Cross-platform
 
 ## Checklist
 
-- [ ] Code compiles without errors
-- [ ] All three language implementations included (Swift, Dart, TypeScript)
-- [ ] Mermaid diagram included
-- [ ] "When to Use" section filled out
-- [ ] Real-world examples provided
-- [ ] Follows existing pattern file structure
-- [ ] No broken links
+- [ ] Code examples compile
+- [ ] Follows the pattern template
+- [ ] Includes when to use/avoid
+- [ ] Clear explanations provided
+- [ ] Diagrams included (if applicable)
+
+## Related Issues
+
+<!-- Fixes #123 -->
+
+## Testing
+
+- [ ] iOS code tested on Xcode 16+
+- [ ] Android code tested on Android Studio
