@@ -2,21 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2026-01-15
+## [Unreleased]
 
 ### Added
+- Comprehensive design patterns catalog
+- iOS and Android implementations
+- Code examples and use cases
+- Decision flowcharts
 
-- Initial release with 33 design patterns
-- **Creational Patterns**: Singleton, Factory Method, Abstract Factory, Builder, Prototype
-- **Structural Patterns**: Adapter, Decorator, Facade, Proxy, Composite
-- **Behavioral Patterns**: Observer, Strategy, Command, State, Chain of Responsibility
-- **Architectural Patterns**: MVC, MVVM, MVP, VIPER, Clean Architecture, TCA, BLoC, Redux
-- **Mobile-Specific Patterns**: Coordinator, Repository, Dependency Injection, Service Locator, Feature Flag
-- **Concurrency Patterns**: Actor Model, Producer-Consumer, Async Sequence, Throttle-Debounce, Circuit Breaker
-- Swift, Dart, and TypeScript implementations for every pattern
-- Mermaid UML diagrams for every pattern
-- Comprehensive README with navigation and quick examples
-- CI pipeline with Markdown linting and link checking
-- Contributing guidelines and issue templates
+## [1.0.0] - 2025-01-01
+
+### Added
+- Initial pattern collection
+- Creational, Structural, Behavioral patterns
+- Mobile-specific patterns
+- Implementation guidelines
+
+[Unreleased]: https://github.com/muhittincamdali/mobile-design-patterns/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/muhittincamdali/mobile-design-patterns/releases/tag/v1.0.0

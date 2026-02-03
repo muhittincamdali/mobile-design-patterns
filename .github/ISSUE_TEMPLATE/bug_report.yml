@@ -1,71 +1,73 @@
 name: Bug Report
-description: Report an issue with a pattern implementation or documentation
+description: Report errors, broken code, or incorrect information
 title: "[Bug]: "
-labels: ["bug"]
+labels: ["bug", "triage"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to report a bug!
-  - type: dropdown
-    id: category
-    attributes:
-      label: Pattern Category
-      options:
-        - Creational
-        - Structural
-        - Behavioral
-        - Architectural
-        - Mobile-Specific
-        - Concurrency
-        - Documentation
-        - Other
-    validations:
-      required: true
-  - type: input
-    id: pattern
-    attributes:
-      label: Pattern Name
-      placeholder: e.g., Singleton, Observer, MVVM
-    validations:
-      required: true
-  - type: dropdown
-    id: language
-    attributes:
-      label: Language
-      options:
-        - Swift
-        - Dart
-        - TypeScript
-        - All
-        - N/A
-    validations:
-      required: true
+        Thanks for helping improve our patterns!
+
   - type: textarea
     id: description
     attributes:
-      label: Bug Description
-      description: A clear description of what the bug is.
+      label: Description
+      description: What issue did you find?
+      placeholder: Describe the problem...
     validations:
       required: true
+
   - type: textarea
-    id: expected
+    id: location
     attributes:
-      label: Expected Behavior
-      description: What you expected to happen.
+      label: Location
+      description: Where is the issue?
+      placeholder: |
+        - Pattern: Singleton
+        - Section: iOS Implementation
+        - File: patterns/creational/singleton.md
     validations:
       required: true
-  - type: textarea
-    id: actual
+
+  - type: dropdown
+    id: type
     attributes:
-      label: Actual Behavior
-      description: What actually happened.
+      label: Issue Type
+      options:
+        - Code Doesn't Compile
+        - Incorrect Pattern Implementation
+        - Outdated Syntax
+        - Broken Link
+        - Typo/Grammar
+        - Missing Information
     validations:
       required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - iOS
+        - Android
+        - Both
+        - General
+    validations:
+      required: true
+
   - type: textarea
     id: fix
     attributes:
       label: Suggested Fix
-      description: If you have a suggestion on how to fix this.
+      description: If you have a correction
+      placeholder: The correct implementation is...
     validations:
       required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues
+          required: true

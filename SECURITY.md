@@ -1,41 +1,40 @@
 # Security Policy
 
-## Reporting a Vulnerability
+## Reporting Security Issues
 
-If you discover a security vulnerability in any code example, please report it responsibly.
+We take security seriously. If you find security vulnerabilities in code examples or documentation, please report them.
 
 ### How to Report
 
-1. **Do not** open a public issue
-2. Email the maintainer or use GitHub's private vulnerability reporting
-3. Include a description of the vulnerability and steps to reproduce
+1. **DO NOT** open a public issue
+2. Use GitHub's private vulnerability reporting
+3. Or contact the maintainer directly
 
-### What to Expect
+### What to Report
 
-- Acknowledgment within 48 hours
-- Fix or mitigation within 7 days for critical issues
-- Credit in the changelog (unless you prefer anonymity)
+- Code examples with security flaws
+- Patterns that could lead to vulnerabilities
+- Links to malicious resources
+- Any content promoting insecure practices
 
-## Scope
+### Response Timeline
 
-This repository contains educational code examples for design patterns. While the code is meant for learning purposes, we still want all examples to follow security best practices:
+- **Acknowledgment**: Within 48 hours
+- **Assessment**: Within 5 days
+- **Resolution**: Based on severity
 
-- No hardcoded credentials or secrets
-- Proper input validation in examples
-- Secure coding patterns demonstrated where applicable
-- No known vulnerable dependencies
+## Security Considerations for Patterns
+
+When contributing, ensure patterns don't introduce:
+- Memory leaks
+- Data exposure
+- Insecure data storage
+- Unsafe threading practices
 
 ## Supported Versions
 
-| Version | Supported |
-| ------- | --------- |
-| latest  | ✅        |
+| Version | Supported          |
+| ------- | ------------------ |
+| Latest  | :white_check_mark: |
 
-## Best Practices
-
-When contributing pattern implementations, please ensure:
-
-- No sensitive data in code examples
-- Use placeholder values for API keys, tokens, etc.
-- Follow OWASP guidelines where applicable
-- Demonstrate secure alternatives when showing patterns that could be misused
+Thank you for helping maintain secure code examples!

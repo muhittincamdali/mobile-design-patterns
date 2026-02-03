@@ -6,45 +6,58 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for suggesting an improvement!
-  - type: dropdown
-    id: type
-    attributes:
-      label: Request Type
-      options:
-        - New Pattern
-        - New Language Implementation
-        - Pattern Improvement
-        - Documentation Enhancement
-        - Other
-    validations:
-      required: true
-  - type: input
-    id: pattern
-    attributes:
-      label: Pattern Name
-      placeholder: e.g., Flyweight, Mediator, etc.
-    validations:
-      required: true
+        Have a pattern to add? Let us know!
+
   - type: textarea
     id: description
     attributes:
       label: Description
-      description: Describe the pattern or improvement you'd like to see.
+      description: What would you like to see added?
+      placeholder: Describe your suggestion...
     validations:
       required: true
-  - type: textarea
-    id: usecase
+
+  - type: dropdown
+    id: category
     attributes:
-      label: Use Case
-      description: How would this be used in mobile development?
+      label: Category
+      options:
+        - New Design Pattern
+        - Code Example (iOS)
+        - Code Example (Android)
+        - Diagram/Visualization
+        - Use Case Documentation
+        - Other
     validations:
       required: true
-  - type: textarea
-    id: examples
+
+  - type: dropdown
+    id: pattern-type
     attributes:
-      label: Code Examples
-      description: Any reference implementations or pseudocode.
-      render: swift
+      label: Pattern Type
+      options:
+        - Creational
+        - Structural
+        - Behavioral
+        - Architectural
+        - Mobile-Specific
+        - Not Applicable
     validations:
       required: false
+
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Rationale
+      description: Why is this valuable?
+      placeholder: This pattern is commonly used in...
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I can help implement this
+          required: false
