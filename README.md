@@ -16,12 +16,15 @@
 
 ---
 
-## Contents
+## 📋 Table of Contents
 
 - [Creational Patterns](#creational-patterns)
 - [Structural Patterns](#structural-patterns)
 - [Behavioral Patterns](#behavioral-patterns)
 - [Mobile-Specific Patterns](#mobile-specific-patterns)
+- [Contributing](#contributing)
+- [License](#license)
+- [Star History](#-star-history)
 
 ---
 
