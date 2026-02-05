@@ -1,533 +1,226 @@
 # Builder Pattern
 
-## Intent
-
-Separate the construction of a complex object from its representation so that the same construction process can create different representations. Especially useful in mobile development for building complex UI configurations, network requests, or alert dialogs.
+> Construct complex objects step by step
 
 ## Problem
 
-Some objects require many parameters during initialization — some optional, some required, some with default values. Telescoping constructors with dozens of parameters are unreadable. Passing `nil` or default values for unused parameters is error-prone.
-
-Consider building an HTTP request: you might need a URL, method, headers, body, timeout, retry policy, caching strategy, and authentication. A single initializer with all these parameters is unwieldy.
+- Object has many optional parameters
+- Object creation requires multiple steps
+- Different representations of same object needed
 
 ## Solution
 
-The Builder pattern constructs the object step by step. Each step configures one aspect of the product. A fluent API with method chaining makes the construction readable. The builder can also validate the configuration before producing the final product.
-
-## UML Diagram
-
-```mermaid
-classDiagram
-    class HTTPRequestBuilder {
-        -url: String
-        -method: String
-        -headers: Map
-        -body: Data
-        -timeout: Int
-        +setURL(url: String): Self
-        +setMethod(method: String): Self
-        +addHeader(key: String, value: String): Self
-        +setBody(body: Data): Self
-        +setTimeout(seconds: Int): Self
-        +build(): HTTPRequest
-    }
-
-    class HTTPRequest {
-        +url: String
-        +method: String
-        +headers: Map
-        +body: Data
-        +timeout: Int
-        +execute(): Response
-    }
-
-    class Director {
-        +buildGetRequest(url: String): HTTPRequest
-        +buildPostRequest(url: String, body: Data): HTTPRequest
-        +buildAuthenticatedRequest(url: String, token: String): HTTPRequest
-    }
-
-    Director --> HTTPRequestBuilder
-    HTTPRequestBuilder --> HTTPRequest : builds
-```
-
-## Swift Implementation
-
 ```swift
-import Foundation
-
 // MARK: - Product
-
-struct HTTPRequest {
+struct NetworkRequest {
     let url: URL
-    let method: String
+    let method: HTTPMethod
     let headers: [String: String]
     let body: Data?
     let timeout: TimeInterval
-    let retryCount: Int
     let cachePolicy: URLRequest.CachePolicy
+    let retryCount: Int
+    let authentication: Authentication?
+}
 
-    func asURLRequest() -> URLRequest {
-        var request = URLRequest(url: url)
-        request.httpMethod = method
-        request.httpBody = body
-        request.timeoutInterval = timeout
-        request.cachePolicy = cachePolicy
-        headers.forEach { request.setValue($1, forHTTPHeaderField: $0) }
-        return request
-    }
+enum HTTPMethod: String {
+    case get = "GET"
+    case post = "POST"
+    case put = "PUT"
+    case delete = "DELETE"
+    case patch = "PATCH"
+}
+
+enum Authentication {
+    case bearer(String)
+    case basic(username: String, password: String)
+    case apiKey(String, headerName: String)
 }
 
 // MARK: - Builder
-
-final class HTTPRequestBuilder {
+class NetworkRequestBuilder {
     private var url: URL?
-    private var method: String = "GET"
+    private var method: HTTPMethod = .get
     private var headers: [String: String] = [:]
     private var body: Data?
     private var timeout: TimeInterval = 30
-    private var retryCount: Int = 0
     private var cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy
-
+    private var retryCount: Int = 0
+    private var authentication: Authentication?
+    
     @discardableResult
-    func setURL(_ urlString: String) -> HTTPRequestBuilder {
+    func url(_ url: URL) -> Self {
+        self.url = url
+        return self
+    }
+    
+    @discardableResult
+    func url(_ urlString: String) -> Self {
         self.url = URL(string: urlString)
         return self
     }
-
+    
     @discardableResult
-    func setMethod(_ method: String) -> HTTPRequestBuilder {
+    func method(_ method: HTTPMethod) -> Self {
         self.method = method
         return self
     }
-
+    
     @discardableResult
-    func addHeader(_ key: String, value: String) -> HTTPRequestBuilder {
-        self.headers[key] = value
+    func header(_ key: String, _ value: String) -> Self {
+        headers[key] = value
         return self
     }
-
+    
     @discardableResult
-    func setContentType(_ contentType: String) -> HTTPRequestBuilder {
-        return addHeader("Content-Type", value: contentType)
-    }
-
-    @discardableResult
-    func setBearerToken(_ token: String) -> HTTPRequestBuilder {
-        return addHeader("Authorization", value: "Bearer \(token)")
-    }
-
-    @discardableResult
-    func setJSONBody<T: Encodable>(_ value: T) throws -> HTTPRequestBuilder {
-        let encoder = JSONEncoder()
-        encoder.keyEncodingStrategy = .convertToSnakeCase
-        self.body = try encoder.encode(value)
-        return setContentType("application/json")
-    }
-
-    @discardableResult
-    func setRawBody(_ data: Data) -> HTTPRequestBuilder {
-        self.body = data
+    func jsonBody<T: Encodable>(_ body: T) -> Self {
+        self.body = try? JSONEncoder().encode(body)
+        headers["Content-Type"] = "application/json"
         return self
     }
-
+    
     @discardableResult
-    func setTimeout(_ seconds: TimeInterval) -> HTTPRequestBuilder {
+    func timeout(_ seconds: TimeInterval) -> Self {
         self.timeout = seconds
         return self
     }
-
+    
     @discardableResult
-    func setRetryCount(_ count: Int) -> HTTPRequestBuilder {
-        self.retryCount = max(0, count)
+    func retry(_ count: Int) -> Self {
+        self.retryCount = count
         return self
     }
-
+    
     @discardableResult
-    func setCachePolicy(_ policy: URLRequest.CachePolicy) -> HTTPRequestBuilder {
-        self.cachePolicy = policy
+    func bearerToken(_ token: String) -> Self {
+        self.authentication = .bearer(token)
         return self
     }
-
-    func build() throws -> HTTPRequest {
+    
+    func build() throws -> NetworkRequest {
         guard let url = url else {
             throw BuilderError.missingURL
         }
-        return HTTPRequest(
+        
+        return NetworkRequest(
             url: url,
             method: method,
             headers: headers,
             body: body,
             timeout: timeout,
+            cachePolicy: cachePolicy,
             retryCount: retryCount,
-            cachePolicy: cachePolicy
+            authentication: authentication
         )
     }
-}
-
-enum BuilderError: Error, LocalizedError {
-    case missingURL
-    case invalidConfiguration(String)
-
-    var errorDescription: String? {
-        switch self {
-        case .missingURL:
-            return "URL is required"
-        case .invalidConfiguration(let reason):
-            return "Invalid configuration: \(reason)"
-        }
+    
+    enum BuilderError: Error {
+        case missingURL
     }
 }
 
-// MARK: - Director
-
-struct RequestDirector {
-    static func makeGetRequest(url: String) throws -> HTTPRequest {
-        return try HTTPRequestBuilder()
-            .setURL(url)
-            .setMethod("GET")
-            .addHeader("Accept", value: "application/json")
-            .build()
+// MARK: - Director (Optional)
+class RequestDirector {
+    static func makeGETRequest(url: String) -> NetworkRequestBuilder {
+        NetworkRequestBuilder()
+            .url(url)
+            .method(.get)
+            .timeout(15)
     }
-
-    static func makeAuthenticatedPost<T: Encodable>(
-        url: String,
-        token: String,
-        body: T
-    ) throws -> HTTPRequest {
-        return try HTTPRequestBuilder()
-            .setURL(url)
-            .setMethod("POST")
-            .setBearerToken(token)
-            .setJSONBody(body)
-            .setTimeout(60)
-            .setRetryCount(3)
-            .build()
-    }
-
-    static func makeFileUpload(url: String, data: Data) throws -> HTTPRequest {
-        return try HTTPRequestBuilder()
-            .setURL(url)
-            .setMethod("POST")
-            .setContentType("application/octet-stream")
-            .setRawBody(data)
-            .setTimeout(120)
-            .setCachePolicy(.reloadIgnoringLocalCacheData)
-            .build()
+    
+    static func makePOSTRequest<T: Encodable>(url: String, body: T) -> NetworkRequestBuilder {
+        NetworkRequestBuilder()
+            .url(url)
+            .method(.post)
+            .jsonBody(body)
+            .timeout(30)
     }
 }
 
 // MARK: - Usage
-
-struct LoginRequest: Encodable {
-    let email: String
-    let password: String
-}
-
-func performLogin() throws {
-    let request = try RequestDirector.makeAuthenticatedPost(
-        url: "https://api.example.com/login",
-        token: "temp-token",
-        body: LoginRequest(email: "user@test.com", password: "secret")
-    )
-    print("Request: \(request.method) \(request.url)")
-    print("Headers: \(request.headers)")
-    print("Timeout: \(request.timeout)s")
-}
+let request = try NetworkRequestBuilder()
+    .url("https://api.example.com/users")
+    .method(.post)
+    .jsonBody(CreateUserRequest(name: "John", email: "john@example.com"))
+    .bearerToken("eyJhbGc...")
+    .timeout(30)
+    .retry(3)
+    .build()
 ```
 
-## Dart Implementation
+## Result Builder (Swift 5.4+)
 
-```dart
-import 'dart:convert';
-import 'dart:typed_data';
-
-// Product
-class HTTPRequest {
-  final Uri url;
-  final String method;
-  final Map<String, String> headers;
-  final Uint8List? body;
-  final Duration timeout;
-  final int retryCount;
-
-  const HTTPRequest({
-    required this.url,
-    required this.method,
-    required this.headers,
-    this.body,
-    required this.timeout,
-    required this.retryCount,
-  });
-
-  @override
-  String toString() => '$method $url (timeout: ${timeout.inSeconds}s, retries: $retryCount)';
-}
-
-// Builder
-class HTTPRequestBuilder {
-  Uri? _url;
-  String _method = 'GET';
-  final Map<String, String> _headers = {};
-  Uint8List? _body;
-  Duration _timeout = const Duration(seconds: 30);
-  int _retryCount = 0;
-
-  HTTPRequestBuilder setURL(String urlString) {
-    _url = Uri.parse(urlString);
-    return this;
-  }
-
-  HTTPRequestBuilder setMethod(String method) {
-    _method = method;
-    return this;
-  }
-
-  HTTPRequestBuilder addHeader(String key, String value) {
-    _headers[key] = value;
-    return this;
-  }
-
-  HTTPRequestBuilder setContentType(String contentType) {
-    return addHeader('Content-Type', contentType);
-  }
-
-  HTTPRequestBuilder setBearerToken(String token) {
-    return addHeader('Authorization', 'Bearer $token');
-  }
-
-  HTTPRequestBuilder setJSONBody(Map<String, dynamic> json) {
-    _body = Uint8List.fromList(utf8.encode(jsonEncode(json)));
-    return setContentType('application/json');
-  }
-
-  HTTPRequestBuilder setRawBody(Uint8List data) {
-    _body = data;
-    return this;
-  }
-
-  HTTPRequestBuilder setTimeout(Duration timeout) {
-    _timeout = timeout;
-    return this;
-  }
-
-  HTTPRequestBuilder setRetryCount(int count) {
-    _retryCount = count < 0 ? 0 : count;
-    return this;
-  }
-
-  HTTPRequest build() {
-    if (_url == null) {
-      throw StateError('URL is required');
+```swift
+@resultBuilder
+struct AlertBuilder {
+    static func buildBlock(_ components: AlertComponent...) -> [AlertComponent] {
+        components
     }
-    return HTTPRequest(
-      url: _url!,
-      method: _method,
-      headers: Map.unmodifiable(_headers),
-      body: _body,
-      timeout: _timeout,
-      retryCount: _retryCount,
-    );
-  }
 }
 
-// Director
-class RequestDirector {
-  static HTTPRequest makeGetRequest(String url) {
-    return HTTPRequestBuilder()
-        .setURL(url)
-        .setMethod('GET')
-        .addHeader('Accept', 'application/json')
-        .build();
-  }
+protocol AlertComponent {}
 
-  static HTTPRequest makeAuthenticatedPost({
-    required String url,
-    required String token,
-    required Map<String, dynamic> body,
-  }) {
-    return HTTPRequestBuilder()
-        .setURL(url)
-        .setMethod('POST')
-        .setBearerToken(token)
-        .setJSONBody(body)
-        .setTimeout(const Duration(seconds: 60))
-        .setRetryCount(3)
-        .build();
-  }
+struct AlertTitle: AlertComponent {
+    let text: String
+}
 
-  static HTTPRequest makeFileUpload({
-    required String url,
-    required Uint8List data,
-  }) {
-    return HTTPRequestBuilder()
-        .setURL(url)
-        .setMethod('POST')
-        .setContentType('application/octet-stream')
-        .setRawBody(data)
-        .setTimeout(const Duration(seconds: 120))
-        .build();
-  }
+struct AlertMessage: AlertComponent {
+    let text: String
+}
+
+struct AlertAction: AlertComponent {
+    let title: String
+    let style: UIAlertAction.Style
+    let handler: () -> Void
+}
+
+class Alert {
+    private var title: String?
+    private var message: String?
+    private var actions: [AlertAction] = []
+    
+    init(@AlertBuilder _ content: () -> [AlertComponent]) {
+        for component in content() {
+            switch component {
+            case let title as AlertTitle:
+                self.title = title.text
+            case let message as AlertMessage:
+                self.message = message.text
+            case let action as AlertAction:
+                self.actions.append(action)
+            default:
+                break
+            }
+        }
+    }
 }
 
 // Usage
-void main() {
-  final request = RequestDirector.makeAuthenticatedPost(
-    url: 'https://api.example.com/login',
-    token: 'temp-token',
-    body: {'email': 'user@test.com', 'password': 'secret'},
-  );
-
-  print('Request: ${request.method} ${request.url}');
-  print('Headers: ${request.headers}');
-  print('Timeout: ${request.timeout.inSeconds}s');
-  print('Retries: ${request.retryCount}');
-}
-```
-
-## TypeScript Implementation
-
-```typescript
-// Product
-interface HTTPRequest {
-  readonly url: string;
-  readonly method: string;
-  readonly headers: Record<string, string>;
-  readonly body?: string;
-  readonly timeout: number;
-  readonly retryCount: number;
-}
-
-// Builder
-class HTTPRequestBuilder {
-  private _url?: string;
-  private _method: string = "GET";
-  private _headers: Record<string, string> = {};
-  private _body?: string;
-  private _timeout: number = 30000;
-  private _retryCount: number = 0;
-
-  setURL(url: string): this {
-    this._url = url;
-    return this;
-  }
-
-  setMethod(method: string): this {
-    this._method = method;
-    return this;
-  }
-
-  addHeader(key: string, value: string): this {
-    this._headers[key] = value;
-    return this;
-  }
-
-  setContentType(contentType: string): this {
-    return this.addHeader("Content-Type", contentType);
-  }
-
-  setBearerToken(token: string): this {
-    return this.addHeader("Authorization", `Bearer ${token}`);
-  }
-
-  setJSONBody(body: Record<string, unknown>): this {
-    this._body = JSON.stringify(body);
-    return this.setContentType("application/json");
-  }
-
-  setRawBody(body: string): this {
-    this._body = body;
-    return this;
-  }
-
-  setTimeout(ms: number): this {
-    this._timeout = ms;
-    return this;
-  }
-
-  setRetryCount(count: number): this {
-    this._retryCount = Math.max(0, count);
-    return this;
-  }
-
-  build(): HTTPRequest {
-    if (!this._url) {
-      throw new Error("URL is required");
+let alert = Alert {
+    AlertTitle(text: "Delete Item?")
+    AlertMessage(text: "This action cannot be undone.")
+    AlertAction(title: "Cancel", style: .cancel) {}
+    AlertAction(title: "Delete", style: .destructive) {
+        deleteItem()
     }
-
-    return Object.freeze({
-      url: this._url,
-      method: this._method,
-      headers: { ...this._headers },
-      body: this._body,
-      timeout: this._timeout,
-      retryCount: this._retryCount,
-    });
-  }
 }
-
-// Director
-class RequestDirector {
-  static makeGetRequest(url: string): HTTPRequest {
-    return new HTTPRequestBuilder()
-      .setURL(url)
-      .setMethod("GET")
-      .addHeader("Accept", "application/json")
-      .build();
-  }
-
-  static makeAuthenticatedPost(
-    url: string,
-    token: string,
-    body: Record<string, unknown>
-  ): HTTPRequest {
-    return new HTTPRequestBuilder()
-      .setURL(url)
-      .setMethod("POST")
-      .setBearerToken(token)
-      .setJSONBody(body)
-      .setTimeout(60000)
-      .setRetryCount(3)
-      .build();
-  }
-
-  static makeFileUpload(url: string, data: string): HTTPRequest {
-    return new HTTPRequestBuilder()
-      .setURL(url)
-      .setMethod("POST")
-      .setContentType("application/octet-stream")
-      .setRawBody(data)
-      .setTimeout(120000)
-      .build();
-  }
-}
-
-// Usage
-const request = RequestDirector.makeAuthenticatedPost(
-  "https://api.example.com/login",
-  "temp-token",
-  { email: "user@test.com", password: "secret" }
-);
-
-console.log(`Request: ${request.method} ${request.url}`);
-console.log(`Headers:`, request.headers);
-console.log(`Timeout: ${request.timeout}ms`);
 ```
 
-## When to Use
+## When to Use ✅
 
-| Scenario | Builder? | Reason |
-|----------|---------|--------|
-| Complex HTTP request configuration | ✅ | Many optional parameters |
-| Alert/dialog construction | ✅ | Variable buttons, styles, actions |
-| Database query building | ✅ | Dynamic WHERE, ORDER, LIMIT |
-| Simple objects with few params | ❌ | Direct init is cleaner |
-| Immutable value types | ❌ | Struct init with defaults works fine |
+- Complex object with many parameters
+- Step-by-step construction needed
+- Different representations required
+- Immutable objects with many properties
 
-## Real-World Examples
+## When NOT to Use ❌
 
-- **Alamofire's `Session.request()`**: Chain-style request configuration
-- **Flutter's `Widget` constructors**: Named parameters act like built-in builders
-- **URLComponents** in iOS: Step-by-step URL construction
-- **Moya's `TargetType`**: Protocol-based request building
-- **Retrofit/Dio**: Request builders for HTTP clients
+- Simple objects with few properties
+- Object can be created in one step
+- No optional parameters
+
+## Related Patterns
+
+- **Abstract Factory**: Build entire families of products
+- **Composite**: Builders often compose complex objects
+- **Prototype**: Alternative when objects are similar

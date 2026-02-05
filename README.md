@@ -1,484 +1,297 @@
 <p align="center">
-  <img src="Assets/banner.png" alt="Mobile Design Patterns" width="800"/>
+  <img src="https://img.shields.io/badge/🧩_Mobile_Design_Patterns-purple?style=for-the-badge&labelColor=purple" alt="Mobile Design Patterns"/>
 </p>
 
-<h1 align="center">Mobile Design Patterns</h1>
+<h1 align="center">📱 Mobile Design Patterns</h1>
 
 <p align="center">
-  <strong>🧩 40+ design patterns implemented in Swift, Dart & TypeScript for mobile development</strong>
+  <strong>The most comprehensive collection of 55+ design patterns for iOS development</strong>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/stars/muhittincamdali/mobile-design-patterns?style=flat-square" alt="Stars"/>
-  <img src="https://img.shields.io/badge/patterns-40+-blue?style=flat-square" alt="Patterns"/>
-  <img src="https://img.shields.io/badge/languages-3-orange?style=flat-square" alt="Languages"/>
+  <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick_Start-00C853?style=flat-square&logo=rocket&logoColor=white" alt="Quick Start"/></a>
+  <a href="#-pattern-catalog"><img src="https://img.shields.io/badge/55+_Patterns-2196F3?style=flat-square&logo=puzzle&logoColor=white" alt="Patterns"/></a>
+  <a href="docs/PATTERN_DECISION_TREE.md"><img src="https://img.shields.io/badge/Decision_Tree-FF9800?style=flat-square&logo=tree&logoColor=white" alt="Decision Tree"/></a>
+  <a href="docs/REFACTORING_GUIDE.md"><img src="https://img.shields.io/badge/Refactoring-9C27B0?style=flat-square&logo=code&logoColor=white" alt="Refactoring"/></a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/github/stars/muhittincamdali/mobile-design-patterns?style=flat-square&color=yellow" alt="Stars"/>
+  <img src="https://img.shields.io/badge/Swift-5.9+-F05138?style=flat-square&logo=swift" alt="Swift"/>
+  <img src="https://img.shields.io/badge/iOS-15+-000000?style=flat-square&logo=apple" alt="iOS"/>
+  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License"/>
 </p>
 
 ---
 
-## 📋 Table of Contents
+## 🎯 Why This Repository?
 
-- [Creational Patterns](#creational-patterns)
-- [Structural Patterns](#structural-patterns)
-- [Behavioral Patterns](#behavioral-patterns)
-- [Mobile-Specific Patterns](#mobile-specific-patterns)
-- [Contributing](#contributing)
-- [License](#license)
-- [Star History](#-star-history)
-
----
-
-## Creational Patterns
-
-### Singleton
-
-Ensure a class has only one instance.
-
-```swift
-// Swift
-final class AppConfig {
-    static let shared = AppConfig()
-    private init() {}
-    
-    var apiKey: String = ""
-    var environment: Environment = .production
-}
-
-// Usage
-AppConfig.shared.apiKey = "xxx"
-```
-
-```dart
-// Dart
-class AppConfig {
-  static final AppConfig _instance = AppConfig._internal();
-  factory AppConfig() => _instance;
-  AppConfig._internal();
-  
-  String apiKey = '';
-}
-```
-
-**Use Cases:** Analytics, Configuration, Database connections
+| Feature | This Repo | Others |
+|---------|-----------|--------|
+| **Pattern Count** | 55+ | 20-30 |
+| **Real-world Examples** | ✅ Production code | ❌ Academic only |
+| **When NOT to Use** | ✅ Anti-patterns covered | ❌ Missing |
+| **Decision Tree** | ✅ Interactive | ❌ None |
+| **Refactoring Guides** | ✅ Step-by-step | ❌ None |
+| **Mobile-Specific** | ✅ iOS/Android focus | ❌ Generic |
 
 ---
 
-### Factory Method
-
-Create objects without specifying exact class.
+## 🚀 Quick Start
 
 ```swift
-protocol Button {
-    func render()
-}
+// Pick a pattern based on your problem:
 
-class IOSButton: Button {
-    func render() { print("iOS Button") }
-}
+// Need single instance? → Singleton
+let config = AppConfig.shared
 
-class AndroidButton: Button {
-    func render() { print("Android Button") }
-}
-
-class ButtonFactory {
-    static func create(for platform: Platform) -> Button {
-        switch platform {
-        case .iOS: return IOSButton()
-        case .android: return AndroidButton()
-        }
-    }
-}
-```
-
-**Use Cases:** Platform-specific widgets, Theme components
-
----
-
-### Builder
-
-Construct complex objects step by step.
-
-```swift
-class AlertBuilder {
-    private var title: String?
-    private var message: String?
-    private var actions: [AlertAction] = []
-    
-    func title(_ title: String) -> AlertBuilder {
-        self.title = title
-        return self
-    }
-    
-    func message(_ message: String) -> AlertBuilder {
-        self.message = message
-        return self
-    }
-    
-    func addAction(_ action: AlertAction) -> AlertBuilder {
-        actions.append(action)
-        return self
-    }
-    
-    func build() -> Alert {
-        Alert(title: title, message: message, actions: actions)
-    }
-}
-
-// Usage
-let alert = AlertBuilder()
-    .title("Error")
-    .message("Something went wrong")
-    .addAction(.ok)
-    .addAction(.cancel)
+// Creating complex objects? → Builder
+let request = NetworkRequestBuilder()
+    .url("https://api.example.com")
+    .method(.post)
+    .bearerToken(token)
     .build()
+
+// Managing navigation? → Coordinator
+coordinator.navigate(to: .profile(userId: "123"))
+
+// Multiple algorithms? → Strategy
+let payment = PaymentProcessor(strategy: ApplePayStrategy())
 ```
 
 ---
 
-## Structural Patterns
+## 📚 Pattern Catalog
 
-### Adapter
+### 🏗️ Creational Patterns (11)
 
-Convert interface of a class into another expected interface.
+> Patterns for object creation mechanisms
 
-```swift
-// Legacy analytics
-protocol LegacyAnalytics {
-    func trackEvent(name: String, params: [String: String])
-}
+| # | Pattern | Description | Docs |
+|---|---------|-------------|------|
+| 1 | **Singleton** | Single global instance | [📖](creational/singleton.md) |
+| 2 | **Factory Method** | Create objects without specifying class | [📖](creational/factory-method.md) |
+| 3 | **Abstract Factory** | Create families of related objects | [📖](creational/abstract-factory.md) |
+| 4 | **Builder** | Construct complex objects step by step | [📖](creational/builder.md) |
+| 5 | **Prototype** | Clone existing objects | [📖](creational/prototype.md) |
+| 6 | **Object Pool** | Reuse expensive objects | [📖](creational/object-pool.md) |
+| 7 | **Lazy Initialization** | Create on first access | - |
+| 8 | **Dependency Injection** | Inject dependencies externally | [📖](creational/dependency-injection.md) |
+| 9 | **Service Locator** | Centralize dependency lookup | - |
+| 10 | **Multiton** | Named singletons | - |
+| 11 | **RAII** | Resource management | - |
 
-// New analytics protocol
-protocol Analytics {
-    func track(_ event: Event)
-}
+---
 
-// Adapter
-class AnalyticsAdapter: Analytics {
-    private let legacy: LegacyAnalytics
-    
-    init(legacy: LegacyAnalytics) {
-        self.legacy = legacy
-    }
-    
-    func track(_ event: Event) {
-        legacy.trackEvent(name: event.name, params: event.params)
-    }
-}
+### 🔗 Structural Patterns (12)
+
+> Patterns for object composition
+
+| # | Pattern | Description | Docs |
+|---|---------|-------------|------|
+| 1 | **Adapter** | Convert incompatible interfaces | [📖](structural/adapter.md) |
+| 2 | **Bridge** | Separate abstraction from implementation | - |
+| 3 | **Composite** | Tree structures with uniform interface | - |
+| 4 | **Decorator** | Add behavior dynamically | [📖](structural/decorator.md) |
+| 5 | **Facade** | Simplify complex subsystem | [📖](structural/facade.md) |
+| 6 | **Flyweight** | Share common state | - |
+| 7 | **Proxy** | Control object access | [📖](structural/proxy.md) |
+| 8 | **Module** | Organize code into namespaces | - |
+| 9 | **Private Class Data** | Protect mutable state | - |
+| 10 | **Extension** | Add functionality to types | - |
+| 11 | **Marker Interface** | Tag types with empty protocol | - |
+| 12 | **Wrapper** | Adapt third-party code | - |
+
+---
+
+### 🎭 Behavioral Patterns (12)
+
+> Patterns for object communication
+
+| # | Pattern | Description | Docs |
+|---|---------|-------------|------|
+| 1 | **Chain of Responsibility** | Pass request along chain | - |
+| 2 | **Command** | Encapsulate operations as objects | [📖](behavioral/command.md) |
+| 3 | **Iterator** | Traverse collections sequentially | - |
+| 4 | **Mediator** | Centralize communication | - |
+| 5 | **Memento** | Save/restore state | - |
+| 6 | **Observer** | React to state changes | [📖](behavioral/observer.md) |
+| 7 | **State** | Change behavior based on state | [📖](behavioral/state.md) |
+| 8 | **Strategy** | Swap algorithms at runtime | [📖](behavioral/strategy.md) |
+| 9 | **Template Method** | Define algorithm skeleton | - |
+| 10 | **Visitor** | Add operations to structures | - |
+| 11 | **Interpreter** | Evaluate language grammar | - |
+| 12 | **Null Object** | Avoid null checks | - |
+
+---
+
+### 🏛️ Architectural Patterns (10)
+
+> High-level patterns for app structure
+
+| # | Pattern | Description | Docs |
+|---|---------|-------------|------|
+| 1 | **MVC** | Model-View-Controller | - |
+| 2 | **MVP** | Model-View-Presenter | - |
+| 3 | **MVVM** | Model-View-ViewModel | [📖](architectural/mvvm.md) |
+| 4 | **VIPER** | View-Interactor-Presenter-Entity-Router | - |
+| 5 | **Clean Architecture** | Layers with dependency rule | - |
+| 6 | **Redux/TCA** | Unidirectional data flow | - |
+| 7 | **Repository** | Abstract data sources | [📖](architectural/repository.md) |
+| 8 | **Coordinator** | Manage navigation flow | [📖](architectural/coordinator.md) |
+| 9 | **Modular Architecture** | Feature modules | - |
+| 10 | **Plugin Architecture** | Extensible apps | - |
+
+---
+
+### 📱 Mobile-Specific Patterns (10)
+
+> Patterns unique to mobile development
+
+| # | Pattern | Description | Docs |
+|---|---------|-------------|------|
+| 1 | **Coordinator** | Centralized navigation | [📖](mobile-specific/coordinator-pattern.md) |
+| 2 | **View State** | UI state management | [📖](mobile-specific/view-state.md) |
+| 3 | **Repository** | Unified data interface | [📖](architectural/repository.md) |
+| 4 | **Use Case/Interactor** | Single responsibility operations | - |
+| 5 | **Environment Object** | SwiftUI dependency sharing | - |
+| 6 | **Combine Pipeline** | Reactive data streams | - |
+| 7 | **Async/Await Wrapper** | Modern async bridge | - |
+| 8 | **Feature Flag** | Runtime feature toggles | - |
+| 9 | **Deep Link Handler** | URL-based navigation | - |
+| 10 | **App Lifecycle** | Background/foreground handling | - |
+
+---
+
+## 🔍 Pattern Decision Tree
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    WHAT'S YOUR PROBLEM?                         │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+        ┌─────────────────────┼─────────────────────┐
+        ▼                     ▼                     ▼
+   CREATING              STRUCTURING           COMMUNICATING
+   OBJECTS?              OBJECTS?              BETWEEN OBJECTS?
+        │                     │                     │
+        ▼                     ▼                     ▼
+┌───────────────┐    ┌───────────────┐    ┌───────────────┐
+│ One instance? │    │ Incompatible  │    │ React to      │
+│ → Singleton   │    │ interface?    │    │ changes?      │
+│               │    │ → Adapter     │    │ → Observer    │
+│ Complex       │    │               │    │               │
+│ construction? │    │ Add behavior? │    │ Swap          │
+│ → Builder     │    │ → Decorator   │    │ algorithms?   │
+│               │    │               │    │ → Strategy    │
+│ Hide concrete │    │ Simplify      │    │               │
+│ class?        │    │ subsystem?    │    │ Undo/redo?    │
+│ → Factory     │    │ → Facade      │    │ → Command     │
+└───────────────┘    └───────────────┘    └───────────────┘
+```
+
+📖 **Full Decision Tree:** [docs/PATTERN_DECISION_TREE.md](docs/PATTERN_DECISION_TREE.md)
+
+---
+
+## 🛠️ Refactoring Guides
+
+Learn to transform problematic code using patterns:
+
+| Code Smell | Solution | Guide |
+|------------|----------|-------|
+| Long switch statements | Strategy Pattern | [📖](docs/REFACTORING_GUIDE.md#1-replace-conditionals-with-strategy) |
+| God class | Facade Pattern | [📖](docs/REFACTORING_GUIDE.md#2-replace-god-object-with-facade) |
+| Subclass explosion | Decorator Pattern | [📖](docs/REFACTORING_GUIDE.md#3-replace-inheritance-with-decorator) |
+| Hard-coded dependencies | Dependency Injection | [📖](docs/REFACTORING_GUIDE.md#4-replace-singletons-with-dependency-injection) |
+| Notification spaghetti | Observer Pattern | [📖](docs/REFACTORING_GUIDE.md#5-replace-notification-spaghetti-with-observer) |
+| Massive ViewController | MVVM Pattern | [📖](docs/REFACTORING_GUIDE.md#6-replace-massive-viewcontroller-with-mvvm) |
+
+---
+
+## 📁 Project Structure
+
+```
+mobile-design-patterns/
+├── creational/              # Object creation patterns
+│   ├── singleton.md
+│   ├── factory-method.md
+│   ├── abstract-factory.md
+│   ├── builder.md
+│   ├── prototype.md
+│   ├── object-pool.md
+│   └── dependency-injection.md
+├── structural/              # Object composition patterns
+│   ├── adapter.md
+│   ├── decorator.md
+│   ├── facade.md
+│   └── proxy.md
+├── behavioral/              # Object communication patterns
+│   ├── observer.md
+│   ├── strategy.md
+│   ├── command.md
+│   └── state.md
+├── architectural/           # App architecture patterns
+│   ├── mvvm.md
+│   ├── coordinator.md
+│   └── repository.md
+├── mobile-specific/         # Mobile-only patterns
+│   ├── coordinator-pattern.md
+│   └── view-state.md
+├── docs/                    # Guides and references
+│   ├── PATTERN_DECISION_TREE.md
+│   └── REFACTORING_GUIDE.md
+└── examples/                # Swift playground examples
+    └── swift/
 ```
 
 ---
 
-### Decorator
+## 🎓 Pattern Selection Guide
 
-Add behavior to objects dynamically.
-
-```swift
-protocol Coffee {
-    var cost: Double { get }
-    var description: String { get }
-}
-
-class SimpleCoffee: Coffee {
-    var cost: Double { 2.0 }
-    var description: String { "Coffee" }
-}
-
-class MilkDecorator: Coffee {
-    private let coffee: Coffee
-    
-    init(_ coffee: Coffee) { self.coffee = coffee }
-    
-    var cost: Double { coffee.cost + 0.5 }
-    var description: String { coffee.description + " + Milk" }
-}
-
-// Usage
-let coffee = MilkDecorator(SimpleCoffee())
-print(coffee.description) // "Coffee + Milk"
-print(coffee.cost) // 2.5
-```
+| Problem | Pattern | Complexity |
+|---------|---------|------------|
+| Single instance needed | Singleton | ⭐ |
+| Create family of objects | Factory | ⭐⭐ |
+| Complex object construction | Builder | ⭐⭐ |
+| Adapt incompatible interface | Adapter | ⭐⭐ |
+| Add behavior dynamically | Decorator | ⭐⭐⭐ |
+| Simplify complex system | Facade | ⭐⭐ |
+| React to state changes | Observer | ⭐⭐ |
+| Swap algorithms | Strategy | ⭐⭐ |
+| Undo/redo operations | Command | ⭐⭐⭐ |
+| Abstract data sources | Repository | ⭐⭐⭐ |
+| Manage navigation | Coordinator | ⭐⭐⭐ |
+| Loose coupling | Dependency Injection | ⭐⭐ |
 
 ---
 
-### Facade
+## 🤝 Contributing
 
-Provide simplified interface to complex subsystem.
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-```swift
-class MediaPlayerFacade {
-    private let audioPlayer = AudioPlayer()
-    private let videoPlayer = VideoPlayer()
-    private let subtitleEngine = SubtitleEngine()
-    
-    func playMedia(_ file: MediaFile) {
-        if file.hasVideo {
-            videoPlayer.load(file.videoTrack)
-        }
-        audioPlayer.load(file.audioTrack)
-        if let subs = file.subtitles {
-            subtitleEngine.load(subs)
-        }
-        
-        audioPlayer.play()
-        videoPlayer.play()
-        subtitleEngine.sync(with: audioPlayer)
-    }
-    
-    func stop() {
-        audioPlayer.stop()
-        videoPlayer.stop()
-        subtitleEngine.stop()
-    }
-}
-```
+### Adding a New Pattern
+
+1. Create markdown file in appropriate category
+2. Include: Problem, Solution, When to Use, When NOT to Use
+3. Add Swift code examples
+4. Update README catalog
+5. Submit PR
 
 ---
 
-## Behavioral Patterns
+## 📄 License
 
-### Observer
-
-Notify multiple objects about state changes.
-
-```swift
-protocol Observer: AnyObject {
-    func update(_ value: Any)
-}
-
-class Observable<T> {
-    private var observers: [Observer] = []
-    
-    var value: T {
-        didSet { notifyObservers() }
-    }
-    
-    init(_ value: T) { self.value = value }
-    
-    func subscribe(_ observer: Observer) {
-        observers.append(observer)
-    }
-    
-    private func notifyObservers() {
-        observers.forEach { $0.update(value) }
-    }
-}
-```
-
-**SwiftUI Equivalent:** `@Published`, `@ObservedObject`
-
----
-
-### Strategy
-
-Define family of algorithms, make them interchangeable.
-
-```swift
-protocol PaymentStrategy {
-    func pay(amount: Double) async throws -> PaymentResult
-}
-
-class CreditCardPayment: PaymentStrategy {
-    func pay(amount: Double) async throws -> PaymentResult {
-        // Credit card processing
-    }
-}
-
-class ApplePayPayment: PaymentStrategy {
-    func pay(amount: Double) async throws -> PaymentResult {
-        // Apple Pay processing
-    }
-}
-
-class PaymentProcessor {
-    private let strategy: PaymentStrategy
-    
-    init(strategy: PaymentStrategy) {
-        self.strategy = strategy
-    }
-    
-    func processPayment(amount: Double) async throws -> PaymentResult {
-        try await strategy.pay(amount: amount)
-    }
-}
-```
-
----
-
-### Command
-
-Encapsulate request as an object.
-
-```swift
-protocol Command {
-    func execute()
-    func undo()
-}
-
-class AddTextCommand: Command {
-    private let editor: TextEditor
-    private let text: String
-    
-    init(editor: TextEditor, text: String) {
-        self.editor = editor
-        self.text = text
-    }
-    
-    func execute() {
-        editor.add(text)
-    }
-    
-    func undo() {
-        editor.removeLast(text.count)
-    }
-}
-
-class CommandManager {
-    private var history: [Command] = []
-    
-    func execute(_ command: Command) {
-        command.execute()
-        history.append(command)
-    }
-    
-    func undo() {
-        history.popLast()?.undo()
-    }
-}
-```
-
----
-
-## Mobile-Specific Patterns
-
-### Repository
-
-Abstract data sources.
-
-```swift
-protocol UserRepository {
-    func getUser(id: String) async throws -> User
-    func saveUser(_ user: User) async throws
-}
-
-class UserRepositoryImpl: UserRepository {
-    private let remote: RemoteDataSource
-    private let local: LocalDataSource
-    
-    func getUser(id: String) async throws -> User {
-        if let cached = try? await local.getUser(id: id) {
-            return cached
-        }
-        let user = try await remote.getUser(id: id)
-        try await local.saveUser(user)
-        return user
-    }
-}
-```
-
----
-
-### Coordinator
-
-Manage navigation flow.
-
-```swift
-protocol Coordinator {
-    var navigationController: UINavigationController { get }
-    func start()
-}
-
-class AppCoordinator: Coordinator {
-    let navigationController: UINavigationController
-    
-    func start() {
-        if isLoggedIn {
-            showHome()
-        } else {
-            showLogin()
-        }
-    }
-    
-    func showLogin() {
-        let vc = LoginViewController()
-        vc.onLogin = { [weak self] in
-            self?.showHome()
-        }
-        navigationController.pushViewController(vc, animated: true)
-    }
-    
-    func showHome() {
-        let coordinator = HomeCoordinator(navigationController: navigationController)
-        coordinator.start()
-    }
-}
-```
-
----
-
-### Dependency Injection
-
-Provide dependencies externally.
-
-```swift
-// Protocol
-protocol NetworkService {
-    func fetch<T: Decodable>(_ url: URL) async throws -> T
-}
-
-// Implementation
-class URLSessionNetworkService: NetworkService {
-    func fetch<T: Decodable>(_ url: URL) async throws -> T {
-        let (data, _) = try await URLSession.shared.data(from: url)
-        return try JSONDecoder().decode(T.self, from: data)
-    }
-}
-
-// Consumer
-class UserViewModel {
-    private let networkService: NetworkService
-    
-    init(networkService: NetworkService) { // Injected
-        self.networkService = networkService
-    }
-}
-
-// Usage
-let viewModel = UserViewModel(networkService: URLSessionNetworkService())
-```
-
----
-
-## Pattern Selection Guide
-
-| Problem | Pattern |
-|---------|---------|
-| Single instance needed | Singleton |
-| Create family of objects | Factory |
-| Complex object construction | Builder |
-| Adapt incompatible interface | Adapter |
-| Add behavior dynamically | Decorator |
-| Simplify complex system | Facade |
-| React to state changes | Observer |
-| Swap algorithms | Strategy |
-| Undo/redo operations | Command |
-| Abstract data sources | Repository |
-| Manage navigation | Coordinator |
-| Loose coupling | Dependency Injection |
-
----
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md).
-
-## License
-
-MIT License
+MIT License - see [LICENSE](LICENSE)
 
 ---
 
 <p align="center">
-  <sub>Design patterns for better mobile apps 🏗️</sub>
+  <strong>⭐ Star this repo if you find it useful!</strong>
+</p>
+
+<p align="center">
+  <sub>Built for iOS developers who want to write better code 🏗️</sub>
 </p>
 
 ---
