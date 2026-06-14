@@ -6,6 +6,8 @@
 
 ---
 
+## 🚀 Killer Feature: Pattern Scaffolder CLI
+Don't memorize boilerplate. Run `./scaffold_pattern.swift Strategy` and the engine will instantly generate a 100% Swift 6 compliant, Actor-isolated design pattern implementation directly into your project.
 > **🛡️ PART OF THE 2026 UNIFIED CORE**
 > This repository is a verified component of 'The Endless March' initiative. Purified for Swift 6, zero-dependency, and engineered for maximum hardware saturation.
 > 
