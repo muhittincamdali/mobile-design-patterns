@@ -1,0 +1,7 @@
+version: 1
+builder:
+  configs:
+    - platform: ios
+      scheme: MobilePatterns
+      documentation_targets: [MobilePatterns]
+    - platform: macos-spm

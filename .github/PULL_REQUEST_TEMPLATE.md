@@ -1,47 +1,12 @@
-## Description
+## What and why
 
-<!-- Describe your changes in detail -->
+<!-- What changes, and the problem it solves. Link the issue if there is one. -->
 
-## Related Issue
+## Checks
 
-<!-- Please link to the issue here using #issue_number -->
-
-Fixes #
-
-## Type of Change
-
-<!-- Put an `x` in all the boxes that apply -->
-
-- [ ] 🐛 Bug fix (non-breaking change which fixes an issue)
-- [ ] ✨ New feature (non-breaking change which adds functionality)
-- [ ] 💥 Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] 🧭 New navigation pattern
-- [ ] 📝 Documentation update
-- [ ] 🔧 Refactoring (no functional changes)
-
-## Checklist
-
-<!-- Put an `x` in all the boxes that apply -->
-
-- [ ] My code follows the project's style guidelines
-- [ ] I have performed a self-review of my own code
-- [ ] I have tested navigation flows thoroughly
-- [ ] I have made corresponding changes to the documentation
-- [ ] My changes generate no new warnings
-- [ ] I have added tests that prove my fix is effective or that my feature works
-- [ ] New and existing unit tests pass locally with my changes
-
-## Navigation Scenarios Tested
-
-<!-- Put an `x` in all the boxes that apply -->
-
-- [ ] Push/Pop navigation
-- [ ] Modal presentation
-- [ ] Tab switching
-- [ ] Deep link handling
-- [ ] Back navigation
-- [ ] State restoration
-
-## Additional Notes
-
-<!-- Add any additional notes for reviewers -->
+- [ ] `swift build` and `swift test` pass, with no new warnings
+- [ ] New behaviour has tests, including the edge cases (cancellation, limits, invalid input)
+- [ ] Public API has documentation comments; `xcodebuild docbuild -scheme MobilePatterns -destination 'generic/platform=macOS'` reports no warnings
+- [ ] If a README sample changed, it was changed in `Examples/PatternGallery/PatternGallery/ReadmeSamples.swift`
+- [ ] For the ports: `flutter analyze` and `flutter test` in `ports/flutter`, `npm test` in `ports/react-native`
+- [ ] `CHANGELOG.md` has an entry under Unreleased

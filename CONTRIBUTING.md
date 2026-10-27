@@ -1,80 +1,61 @@
-# Contributing to SwiftRouter
+# Contributing
 
-First off, thank you for considering contributing to SwiftRouter! It's people like you that make SwiftRouter such a great tool.
+Thanks for helping. This repository holds a Swift package (`Sources/`, `Tests/`), an example app
+(`Examples/PatternGallery`) and two ports (`ports/flutter`, `ports/react-native`).
 
-## Code of Conduct
+## What fits
 
-This project and everyone participating in it is governed by our Code of Conduct. By participating, you are expected to uphold this code.
+A pattern belongs here when it removes a real bug or a repeated decision from app code, and
+when it can be tested without a device. A change to an existing type is welcome when it comes
+with a test that fails before the change.
 
-## How Can I Contribute?
+Open an issue first for a new pattern or a change to public API, so the shape can be agreed
+before you write it.
 
-### Reporting Bugs
+## Set up
 
-Before creating bug reports, please check the existing issues as you might find out that you don't need to create one. When you are creating a bug report, please include as many details as possible:
-
-- **Use a clear and descriptive title**
-- **Describe the exact steps which reproduce the problem**
-- **Provide specific examples to demonstrate the steps**
-- **Describe the behavior you observed after following the steps**
-- **Explain which behavior you expected to see instead and why**
-- **Include Swift version and OS version**
-
-### Suggesting Enhancements
-
-Enhancement suggestions are tracked as GitHub issues. When creating an enhancement suggestion, please include:
-
-- **Use a clear and descriptive title**
-- **Provide a step-by-step description of the suggested enhancement**
-- **Provide specific examples to demonstrate the steps**
-- **Describe the current behavior and explain which behavior you expected to see instead**
-- **Explain why this enhancement would be useful**
-
-### Pull Requests
-
-1. Fork the repo and create your branch from `main`
-2. If you've added code that should be tested, add tests
-3. If you've changed APIs, update the documentation
-4. Ensure the test suite passes
-5. Make sure your code follows the existing style (SwiftLint)
-6. Issue that pull request!
-
-## Development Setup
-
-```bash
-# Clone your fork
-git clone https://github.com/YOUR_USERNAME/SwiftRouter.git
-
-# Navigate to the project
-cd SwiftRouter
-
-# Open in Xcode
-open Package.swift
-
-# Run tests
+```sh
+git clone https://github.com/muhittincamdali/mobile-design-patterns.git
+cd mobile-design-patterns
 swift test
 ```
 
-## Style Guide
+Xcode 26 or later. For the example app, open `Examples/PatternGallery/PatternGallery.xcodeproj`.
+The project file is made with [XcodeGen](https://github.com/yonaskolb/XcodeGen) from
+`Examples/PatternGallery/project.yml`; run `xcodegen` in that folder after editing it.
 
-- Follow [Swift API Design Guidelines](https://swift.org/documentation/api-design-guidelines/)
-- Use SwiftLint for code style consistency
-- Write meaningful commit messages following [Conventional Commits](https://www.conventionalcommits.org/)
-- Document public APIs with DocC-compatible comments
+For the ports:
 
-## Commit Messages
+```sh
+cd ports/flutter && flutter pub get && flutter analyze && flutter test
+cd ports/react-native && npm ci && npm run typecheck && npm test
+```
 
-We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
+## Rules for code
 
-- `feat:` A new feature
-- `fix:` A bug fix
-- `docs:` Documentation only changes
-- `style:` Code style changes (formatting, semicolons, etc)
-- `refactor:` Code change that neither fixes a bug nor adds a feature
-- `test:` Adding missing tests
-- `chore:` Changes to the build process or auxiliary tools
+- Swift 6 language mode, no warnings, no dependencies.
+- Every public declaration has a documentation comment that says what it does with edge
+  cases: limits, cancellation, invalid input.
+- Anything that can grow (stacks, caches, buffers, histories) has a limit. Out-of-range
+  arguments are clamped or refused with an error; they do not trap.
+- Input from outside the app (URLs, headers, server data) is checked before use, and error
+  values do not carry copies of rejected input.
+- Tests use Swift Testing. Concurrency tests hold work with a gate and wait on a condition
+  rather than sleeping, so they do not depend on timing.
 
-Example: `feat(deeplink): add universal link support`
+## README samples
 
-## License
+The README's code comes from `Examples/PatternGallery/PatternGallery/ReadmeSamples.swift`. The
+test target compiles that file through a symlink, so change the sample there, add or update a
+test in `Tests/MobilePatternsTests/ReadmeSampleTests.swift`, then copy it into the README.
 
-By contributing, you agree that your contributions will be licensed under the MIT License.
+## Screenshots
+
+`scripts/capture-screens.sh` rebuilds the example app on an iPhone simulator and replaces the
+images in `docs/images/`. Run it when a screen changes.
+
+## Commits and pull requests
+
+Use [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`,
+`test:`, `ci:`, `chore:`), one logical change per commit, and add a line to `CHANGELOG.md`
+under Unreleased. By contributing you agree that your work is released under the MIT license.

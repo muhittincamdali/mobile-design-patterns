@@ -1,28 +1,12 @@
-name: Feature Request
-description: Suggest an idea for this project
-title: "[Feature]: "
+name: Pattern or feature request
+description: Propose a new pattern, a change to an existing type, or a port.
 labels: ["enhancement"]
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Thanks for suggesting a feature! Please fill out the information below.
-
   - type: textarea
     id: problem
     attributes:
-      label: Problem Statement
-      description: Is your feature request related to a problem? Please describe.
-      placeholder: A clear and concise description of what the problem is.
-    validations:
-      required: true
-
-  - type: textarea
-    id: solution
-    attributes:
-      label: Proposed Solution
-      description: Describe the solution you'd like
-      placeholder: A clear and concise description of what you want to happen.
+      label: Problem in app code
+      description: The bug or duplicated decision this would remove, ideally with a short example of the code as it is today.
     validations:
       required: true
 
@@ -30,33 +14,17 @@ body:
     id: api
     attributes:
       label: Proposed API
-      description: If applicable, show how you envision the API
+      description: How the call site would look.
       render: swift
+
+  - type: textarea
+    id: edge-cases
+    attributes:
+      label: Edge cases
+      description: Cancellation, concurrency, limits, invalid input; what should happen in each.
 
   - type: textarea
     id: alternatives
     attributes:
-      label: Alternatives Considered
-      description: Describe any alternative solutions or features you've considered.
-
-  - type: dropdown
-    id: category
-    attributes:
-      label: Category
-      options:
-        - Navigation Pattern
-        - Deep Linking
-        - State Management
-        - Animation/Transition
-        - API Improvement
-        - Documentation
-        - Other
-    validations:
-      required: true
-
-  - type: checkboxes
-    id: contribution
-    attributes:
-      label: Contribution
-      options:
-        - label: I would be willing to submit a PR for this feature
+      label: Alternatives
+      description: Existing types, Apple frameworks or packages that already cover part of it.

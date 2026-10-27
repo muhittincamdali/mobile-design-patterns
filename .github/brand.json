@@ -1,0 +1,42 @@
+{
+  "name": "Mobile Design Patterns",
+  "repository": "muhittincamdali/mobile-design-patterns",
+  "tagline": {
+    "en": "Design patterns for iOS and macOS apps as tested Swift types, with Flutter and React Native ports."
+  },
+  "tags": {
+    "en": [
+      "Swift 6",
+      "iOS · macOS",
+      "Flutter · React Native"
+    ]
+  },
+  "motif": "code",
+  "buttons": [
+    "start",
+    "docs",
+    "examples"
+  ],
+  "links": {
+    "docs": "https://muhittincamdali.github.io/mobile-design-patterns/documentation/mobilepatterns/",
+    "examples": "Examples/"
+  },
+  "languages": [
+    "en",
+    "tr",
+    "zh-CN",
+    "ja",
+    "ko",
+    "es",
+    "de",
+    "fr",
+    "pt-BR",
+    "ru"
+  ],
+  "docc": {
+    "targets": [
+      "MobilePatterns"
+    ]
+  },
+  "socialTheme": "dark"
+}
