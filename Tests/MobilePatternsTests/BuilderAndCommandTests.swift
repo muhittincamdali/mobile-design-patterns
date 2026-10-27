@@ -119,11 +119,11 @@ struct RequestBuilderTests {
     }
 
     @Test func refusesHeaderInjection() {
-        #expect(error(Self.base.header("X-Note", "ok\r\nSet-Cookie: a=b")) == .invalidHeaderValue(name: "X-Note"))
-        #expect(error(Self.base.header("X-Note", "a\nb")) == .invalidHeaderValue(name: "X-Note"))
-        #expect(error(Self.base.header("X-Note", "a\0b")) == .invalidHeaderValue(name: "X-Note"))
+        #expect(error(Self.base.header("X-Note", "ok\r\nSet-Cookie: a=b")) == .invalidHeaderValue)
+        #expect(error(Self.base.header("X-Note", "a\nb")) == .invalidHeaderValue)
+        #expect(error(Self.base.header("X-Note", "a\0b")) == .invalidHeaderValue)
         let long = String(repeating: "a", count: RequestBuilder.maxHeaderValueLength + 1)
-        #expect(error(Self.base.header("X-Note", long)) == .invalidHeaderValue(name: "X-Note"))
+        #expect(error(Self.base.header("X-Note", long)) == .invalidHeaderValue)
     }
 
     @Test func refusesInvalidHeaderNames() {
@@ -144,6 +144,15 @@ struct RequestBuilderTests {
             #expect(failure != nil)
             #expect(!String(describing: failure).contains("secret"))
         }
+    }
+
+    @Test func headerValueErrorCarriesNoHeaderName() {
+        // A valid token can be any length, so a name echoed by the error could reach a log line.
+        let name = "X-secret-" + String(repeating: "a", count: 9_000)
+        let failure = error(Self.base.header(name, "a\nb"))
+        #expect(failure != nil)
+        #expect(!String(describing: failure).contains("secret"))
+        #expect(String(describing: failure).utf8.count < 100)
     }
 
     @Test func headerNamesReplaceWithoutCase() throws {

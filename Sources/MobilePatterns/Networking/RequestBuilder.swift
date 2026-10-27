@@ -124,7 +124,7 @@ public struct RequestBuilder: Sendable {
             }
             guard header.value.utf8.count <= Self.maxHeaderValueLength,
                   !header.value.unicodeScalars.contains(where: { $0 == "\r" || $0 == "\n" || $0 == "\0" })
-            else { throw .invalidHeaderValue(name: header.name) }
+            else { throw .invalidHeaderValue }
         }
         if body != nil, method == .get || method == .head {
             throw .bodyNotAllowed(method.rawValue)
@@ -169,9 +169,9 @@ public struct RequestBuilder: Sendable {
 
 /// Why ``RequestBuilder/build()`` refused to build a request.
 ///
-/// No case carries the refused text: a bad path segment is reported by its position and a bad
-/// header name or value without it, so a header value with a line break or a 9 KB name cannot
-/// reach a log line through the error.
+/// No case carries text from the request: a bad path segment is reported by its position, and a
+/// bad header name or value by the case alone, so a header value with a line break or a 9 KB
+/// header name cannot reach a log line through the error.
 public enum RequestBuilderError: Error, Equatable, Sendable {
     /// The base URL is not `http` or `https`, has no host, or carries a query, fragment or
     /// credentials.
@@ -182,9 +182,8 @@ public enum RequestBuilderError: Error, Equatable, Sendable {
     /// A header name is empty or has characters outside the HTTP token set.
     case invalidHeaderName
     /// A header value contains a line break or NUL, or is longer than
-    /// ``RequestBuilder/maxHeaderValueLength``. Carries the header's name, which passed the name
-    /// check, not the value.
-    case invalidHeaderValue(name: String)
+    /// ``RequestBuilder/maxHeaderValueLength``.
+    case invalidHeaderValue
     /// `GET` and `HEAD` requests cannot carry a body.
     case bodyNotAllowed(String)
     /// The timeout is zero or negative.
