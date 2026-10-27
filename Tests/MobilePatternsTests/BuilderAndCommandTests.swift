@@ -113,9 +113,9 @@ struct RequestBuilderTests {
     }
 
     @Test func refusesDotAndEmptySegments() {
-        #expect(error(Self.base.path("..")) == .invalidPathSegment(".."))
-        #expect(error(Self.base.path("a", ".")) == .invalidPathSegment("."))
-        #expect(error(Self.base.path("")) == .invalidPathSegment(""))
+        #expect(error(Self.base.path("..")) == .invalidPathSegment(position: 1))
+        #expect(error(Self.base.path("a", ".")) == .invalidPathSegment(position: 2))
+        #expect(error(Self.base.path("a").path("b", "")) == .invalidPathSegment(position: 3))
     }
 
     @Test func refusesHeaderInjection() {
@@ -127,8 +127,22 @@ struct RequestBuilderTests {
     }
 
     @Test func refusesInvalidHeaderNames() {
-        for name in ["", "Bad Name", "Bad:Name", "Ünicode", "a\r\nb"] {
-            #expect(error(Self.base.header(name, "1")) == .invalidHeaderName(name))
+        let long = "X-" + String(repeating: "a", count: 9_000) + "\r\n"
+        for name in ["", "Bad Name", "Bad:Name", "Ünicode", "a\r\nb", long] {
+            #expect(error(Self.base.header(name, "1")) == .invalidHeaderName)
+        }
+    }
+
+    @Test func errorsCarryNoRefusedText() {
+        let value = "ok\r\nSet-Cookie: session=secret"
+        let failures = [
+            error(Self.base.header("Bad\r\nName: secret", "1")),
+            error(Self.base.header("X-Note", value)),
+            error(Self.base.path("secret", "..")),
+        ]
+        for failure in failures {
+            #expect(failure != nil)
+            #expect(!String(describing: failure).contains("secret"))
         }
     }
 

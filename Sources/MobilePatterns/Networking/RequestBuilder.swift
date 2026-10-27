@@ -102,8 +102,8 @@ public struct RequestBuilder: Sendable {
               components.query == nil, components.fragment == nil
         else { throw .invalidBaseURL }
 
-        for segment in segments where segment.isEmpty || segment == "." || segment == ".." {
-            throw .invalidPathSegment(segment)
+        for (index, segment) in segments.enumerated() where segment.isEmpty || segment == "." || segment == ".." {
+            throw .invalidPathSegment(position: index + 1)
         }
         let basePath = components.percentEncodedPath.hasSuffix("/")
             ? String(components.percentEncodedPath.dropLast())
@@ -120,7 +120,7 @@ public struct RequestBuilder: Sendable {
 
         for header in headers {
             guard !header.name.isEmpty, header.name.unicodeScalars.allSatisfy(Self.isTokenCharacter) else {
-                throw .invalidHeaderName(header.name)
+                throw .invalidHeaderName
             }
             guard header.value.utf8.count <= Self.maxHeaderValueLength,
                   !header.value.unicodeScalars.contains(where: { $0 == "\r" || $0 == "\n" || $0 == "\0" })
@@ -168,16 +168,22 @@ public struct RequestBuilder: Sendable {
 }
 
 /// Why ``RequestBuilder/build()`` refused to build a request.
+///
+/// No case carries the refused text: a bad path segment is reported by its position and a bad
+/// header name or value without it, so a header value with a line break or a 9 KB name cannot
+/// reach a log line through the error.
 public enum RequestBuilderError: Error, Equatable, Sendable {
     /// The base URL is not `http` or `https`, has no host, or carries a query, fragment or
     /// credentials.
     case invalidBaseURL
-    /// A path segment is empty, `.` or `..`.
-    case invalidPathSegment(String)
+    /// A path segment is empty, `.` or `..`. Carries its position among the segments added with
+    /// ``RequestBuilder/path(_:)``, counted from 1.
+    case invalidPathSegment(position: Int)
     /// A header name is empty or has characters outside the HTTP token set.
-    case invalidHeaderName(String)
+    case invalidHeaderName
     /// A header value contains a line break or NUL, or is longer than
-    /// ``RequestBuilder/maxHeaderValueLength``.
+    /// ``RequestBuilder/maxHeaderValueLength``. Carries the header's name, which passed the name
+    /// check, not the value.
     case invalidHeaderValue(name: String)
     /// `GET` and `HEAD` requests cannot carry a body.
     case bodyNotAllowed(String)
