@@ -21,8 +21,9 @@ were removed, so this is a major version.
     - `StateMachine`: transitions as one closure; refused events keep the state.
     - `Router`: an `@Observable` navigation stack with a depth limit.
     - `DeepLinkParser`, `DeepLinkParameters`, `DeepLinkError`: allowlisted schemes and hosts, no
-      credentials, no `.` or `..` segments, valid percent encoding, no control characters, size
-      limits, and patterns that return the whole stack.
+      credentials, no `.` or `..` segments, no `/` or `\` encoded inside a segment (`%2F`, `%5C`),
+      valid percent encoding, no control characters, size limits, and patterns that return the
+      whole stack. Errors name the failed check and at most a position, never text from the URL.
     - `Repository` and `CachePolicy`: an actor with a bounded LRU cache, time to live, shared
       fetches per key, cached-then-fresh updates, and overtaken fetches that are not stored.
     - `AsyncLoader`: `retrying` (1 to 100 attempts), `timeout` and `coalescing` decorators.
@@ -30,9 +31,11 @@ were removed, so this is a major version.
       and returns at once on cancellation.
     - `Broadcaster`: one event stream per subscriber with a bounded buffer.
     - `UndoStack` and `EditCommand`: undo and redo with a history limit.
-    - `RequestBuilder`: URL requests with encoded paths and queries, header injection checks, no
-      body on `GET` or `HEAD`, and positive timeouts.
-- 100 Swift Testing tests, including the README samples and a live client against a stubbed
+    - `RequestBuilder`: URL requests with encoded paths and queries, no `.` or `..` segment or
+      part of a segment (such as `../admin`), header injection checks, no body on `GET` or
+      `HEAD`, and positive timeouts. Errors carry no text from the request, not even a header
+      name.
+- 103 Swift Testing tests, including the README samples and a live client against a stubbed
   `URLSession`.
 - `PatternGallery`, an iOS and macOS example app with one screen per pattern and a `patterns://`
   URL scheme.

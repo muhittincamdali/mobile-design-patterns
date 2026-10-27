@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@7e585ab27e1814cb9809e32b683be9fa941ed2ec status=reviewed -->
+<!-- i18n-source: README.md@3069f4f22d45f2e06ad067de36ff81918c555181 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-light.svg" alt="Mobile Design Patterns: Design patterns for iOS and macOS apps as tested Swift types, with Flutter and React Native ports."></picture></p>
@@ -34,7 +34,7 @@ iOS ve macOS uygulamaları için, tek tek kullanabileceğiniz küçük tipler ol
   `RequestBuilder`; temel sınıf yok, benimsenecek bir framework yok, bağımlılık yok.
 - **Uç durumlar ele alınmış ve test edilmiş** — geride kalan istekler önbelleğe alınmaz, yeniden yükleme listeyi ekranda tutar, iptal edilen iş asla yeniden denenmez, yavaş bir abone belleği büyütemez, satır sonu içeren başlık değerleri reddedilir, sayısal link parametreleri taşma durumunda çökmez.
 - **Swift 6 dil modu** — paket, sıkı eşzamanlılık denetimiyle ve uyarısız derlenir; paylaşılan durum actor'larda ya da bir kilidin arkasında tutulur.
-- **Test edilmiş** — macOS'ta 100, iPhone simülatöründe 99 Swift Testing testi (exit test'ler yalnızca macOS'ta çalışır); bunlara README örnekleri ve örnek uygulamanın stub'lanmış `URLSession` karşısındaki gerçek istemcisi de dahildir.
+- **Test edilmiş** — macOS'ta 103, iPhone simülatöründe 102 Swift Testing testi (exit test'ler yalnızca macOS'ta çalışır); bunlara README örnekleri ve örnek uygulamanın stub'lanmış `URLSession` karşısındaki gerçek istemcisi de dahildir.
 - **Örnek uygulama** — iOS ve macOS için [PatternGallery](Examples/PatternGallery); her kalıp için bir ekran vardır, CI her iki platform için de derler.
 - **Flutter ve React Native portları** — görünüm durumu, durum makinesi ve geri alma; bir Flutter paketi (11 test) ve React hook'u içeren bir TypeScript paketi (17 test) olarak [`ports/`](ports) klasöründedir.
 
@@ -165,7 +165,7 @@ final class CheckoutModel {
 
 ### Deep link'leri bir router üzerinden açın
 
-`DeepLinkParser`, bir kalıpla eşleştirmeden önce scheme'i, host'u, kimlik bilgilerini, `.` ve `..` segmentlerini, kodlamayı, kontrol karakterlerini ve boyutları denetler. Bir kalıp yığının tamamını döndürür, böylece geri düğmesi çalışır:
+`DeepLinkParser`, bir kalıpla eşleştirmeden önce scheme'i, host'u, kimlik bilgilerini, `.` ve `..` segmentlerini, bir segmentin içine kodlanmış `/` ya da `\` karakterini (`%2F`, `%5C`), kodlamayı, kontrol karakterlerini ve boyutları denetler. Bir kalıp yığının tamamını döndürür, böylece geri düğmesi çalışır:
 
 ```swift
 extension DeepLinkParser where Route == AppRoute {

@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@7e585ab27e1814cb9809e32b683be9fa941ed2ec status=reviewed -->
+<!-- i18n-source: README.md@3069f4f22d45f2e06ad067de36ff81918c555181 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-light.svg" alt="Mobile Design Patterns: Design patterns for iOS and macOS apps as tested Swift types, with Flutter and React Native ports."></picture></p>
@@ -34,7 +34,7 @@ Um pacote Swift de padrões de projeto para apps iOS e macOS, escritos como tipo
   `RequestBuilder`; sem classes base, sem framework para adotar, sem dependências.
 - **Casos extremos tratados e testados** — buscas ultrapassadas por outras mais recentes não vão para o cache, um recarregamento mantém a lista na tela, um cancelamento nunca é repetido, um assinante lento não consegue fazer a memória crescer, valores de cabeçalho com quebras de linha são recusados e parâmetros numéricos de links não derrubam o app em caso de estouro.
 - **Modo de linguagem Swift 6** — o pacote compila com verificação estrita de concorrência e sem avisos; o estado compartilhado fica em actors ou atrás de um lock.
-- **Testado** — 100 testes do Swift Testing no macOS e 99 em um simulador de iPhone (os exit tests rodam só no macOS), incluindo os exemplos do README e o cliente real do app de exemplo contra uma `URLSession` simulada com stubs.
+- **Testado** — 103 testes do Swift Testing no macOS e 102 em um simulador de iPhone (os exit tests rodam só no macOS), incluindo os exemplos do README e o cliente real do app de exemplo contra uma `URLSession` simulada com stubs.
 - **App de exemplo** — [PatternGallery](Examples/PatternGallery) para iOS e macOS, com uma tela por padrão; a CI o compila para as duas plataformas.
 - **Ports para Flutter e React Native** — estado de view, máquina de estados e desfazer como um pacote Flutter (11 testes) e um pacote TypeScript com um hook do React (17 testes), em [`ports/`](ports).
 
@@ -165,7 +165,7 @@ final class CheckoutModel {
 
 ### Abrir deep links por meio de um router
 
-O `DeepLinkParser` verifica o scheme, o host, as credenciais, os segmentos `.` e `..`, a codificação, os caracteres de controle e os tamanhos antes de comparar com um padrão. Um padrão devolve a pilha inteira, então o botão de voltar funciona:
+O `DeepLinkParser` verifica o scheme, o host, as credenciais, os segmentos `.` e `..`, uma `/` ou `\` codificada dentro de um segmento (`%2F`, `%5C`), a codificação, os caracteres de controle e os tamanhos antes de comparar com um padrão. Um padrão devolve a pilha inteira, então o botão de voltar funciona:
 
 ```swift
 extension DeepLinkParser where Route == AppRoute {

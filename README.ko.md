@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@7e585ab27e1814cb9809e32b683be9fa941ed2ec status=reviewed -->
+<!-- i18n-source: README.md@3069f4f22d45f2e06ad067de36ff81918c555181 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-light.svg" alt="Mobile Design Patterns: Design patterns for iOS and macOS apps as tested Swift types, with Flutter and React Native ports."></picture></p>
@@ -34,7 +34,7 @@ iOS와 macOS 앱을 위한 디자인 패턴을 하나씩 따로 쓸 수 있는 �
   `RequestBuilder`. 기반 클래스도, 도입해야 할 프레임워크도, 의존성도 없습니다.
 - **엣지 케이스를 처리하고 테스트함** — 더 나중에 시작된 요청에 추월당한 fetch 결과는 캐시하지 않고, 다시 불러오는 동안에도 목록은 화면에 남아 있으며, 취소된 작업은 다시 시도하지 않고, 느린 구독자가 메모리를 늘릴 수 없으며, 줄바꿈이 들어간 헤더 값은 거부하고, 숫자 링크 매개변수는 오버플로가 나도 크래시하지 않습니다.
 - **Swift 6 언어 모드** — 패키지는 엄격한 동시성 검사 아래에서 경고 없이 빌드됩니다. 공유 상태는 actor 안에 있거나 락 뒤에 있습니다.
-- **테스트됨** — macOS에서 Swift Testing 테스트 100개, iPhone 시뮬레이터에서 99개를 실행합니다(exit test는 macOS에서만 실행됩니다). README 예제와, 스텁으로 대체한 `URLSession`을 상대로 하는 예제 앱의 실제 클라이언트 테스트도 포함됩니다.
+- **테스트됨** — macOS에서 Swift Testing 테스트 103개, iPhone 시뮬레이터에서 102개를 실행합니다(exit test는 macOS에서만 실행됩니다). README 예제와, 스텁으로 대체한 `URLSession`을 상대로 하는 예제 앱의 실제 클라이언트 테스트도 포함됩니다.
 - **예제 앱** — iOS와 macOS용 [PatternGallery](Examples/PatternGallery)에 패턴마다 화면이 하나씩 있으며, CI가 두 플랫폼 모두에서 빌드합니다.
 - **Flutter와 React Native 포트** — 뷰 상태, 상태 머신, 실행 취소를 Flutter 패키지(테스트 11개)와 React hook이 포함된 TypeScript 패키지(테스트 17개)로 [`ports/`](ports)에 제공합니다.
 
@@ -165,7 +165,7 @@ final class CheckoutModel {
 
 ### router로 deep link 열기
 
-`DeepLinkParser`는 패턴과 대조하기 전에 scheme, host, 자격 증명, `.`와 `..` 세그먼트, 인코딩, 제어 문자, 크기를 검사합니다. 패턴은 스택 전체를 반환하므로 뒤로 가기 버튼이 제대로 동작합니다.
+`DeepLinkParser`는 패턴과 대조하기 전에 scheme, host, 자격 증명, `.`와 `..` 세그먼트, 세그먼트 안에 인코딩된 `/`나 `\`(`%2F`, `%5C`), 인코딩, 제어 문자, 크기를 검사합니다. 패턴은 스택 전체를 반환하므로 뒤로 가기 버튼이 제대로 동작합니다.
 
 ```swift
 extension DeepLinkParser where Route == AppRoute {

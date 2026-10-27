@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@7e585ab27e1814cb9809e32b683be9fa941ed2ec status=reviewed -->
+<!-- i18n-source: README.md@3069f4f22d45f2e06ad067de36ff81918c555181 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-light.svg" alt="Mobile Design Patterns: Design patterns for iOS and macOS apps as tested Swift types, with Flutter and React Native ports."></picture></p>
@@ -34,7 +34,7 @@ iOS と macOS アプリ向けのデザインパターンを、1 つずつ使え�
   `RequestBuilder`。基底クラスも、導入すべきフレームワークも、依存関係もありません。
 - **エッジケースを処理し、テスト済み** — 後発のリクエストに追い越された取得結果はキャッシュされません。再読み込み中も一覧は画面に残ります。キャンセルは再試行されません。遅い購読者がメモリを増やすことはありません。改行を含むヘッダー値は拒否されます。数値のリンクパラメーターはオーバーフローしてもクラッシュしません。
 - **Swift 6 言語モード** — パッケージは厳格な並行処理チェックのもとで、警告なしにビルドされます。共有状態は actor の中か、ロックの背後に置かれています。
-- **テスト済み** — macOS で 100 件、iPhone シミュレータで 99 件の Swift Testing テストがあります（exit test は macOS でのみ実行されます）。README のサンプルや、サンプルアプリの実クライアントをスタブ化した `URLSession` に対して動かすテストも含みます。
+- **テスト済み** — macOS で 103 件、iPhone シミュレータで 102 件の Swift Testing テストがあります（exit test は macOS でのみ実行されます）。README のサンプルや、サンプルアプリの実クライアントをスタブ化した `URLSession` に対して動かすテストも含みます。
 - **サンプルアプリ** — iOS と macOS 向けの [PatternGallery](Examples/PatternGallery)。パターンごとに 1 画面あり、CI が両方のプラットフォームでビルドします。
 - **Flutter と React Native への移植** — ビュー状態、ステートマシン、取り消しを、Flutter パッケージ（テスト 11 件）と React フックを備えた TypeScript パッケージ（テスト 17 件）として [`ports/`](ports) に用意しています。
 
@@ -165,7 +165,7 @@ final class CheckoutModel {
 
 ### router で deep link を開く
 
-`DeepLinkParser` は、パターンと照合する前に、scheme、host、認証情報、`.` と `..` のセグメント、エンコード、制御文字、サイズを検査します。パターンはスタック全体を返すので、戻るボタンが正しく動きます。
+`DeepLinkParser` は、パターンと照合する前に、scheme、host、認証情報、`.` と `..` のセグメント、セグメント内にエンコードされた `/` や `\`（`%2F`、`%5C`）、エンコード、制御文字、サイズを検査します。パターンはスタック全体を返すので、戻るボタンが正しく動きます。
 
 ```swift
 extension DeepLinkParser where Route == AppRoute {
