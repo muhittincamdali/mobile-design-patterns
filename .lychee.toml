@@ -45,8 +45,9 @@ remap = [
   '^https://github\.com/muhittincamdali/mobile-design-patterns/(?:blob|tree)/main/(.*)$ file:///home/runner/work/mobile-design-patterns/mobile-design-patterns/$1',
   # The article pages on GitHub Pages are built from the .docc articles by docs.yml after a push
   # to main, so a pull request that adds an article links to a page that is not online yet. Each
-  # article URL is checked against its source file instead; the documentation root stays a live
-  # check, so a site that is down still fails.
+  # article URL is checked against its source file instead, and so is the documentation root,
+  # whose first deployment also comes after the merge.
+  '^https://muhittincamdali\.github\.io/mobile-design-patterns/documentation/mobilepatterns/?$ file:///home/runner/work/mobile-design-patterns/mobile-design-patterns/Sources/MobilePatterns/MobilePatterns.docc/MobilePatterns.md',
   '^https://muhittincamdali\.github\.io/mobile-design-patterns/documentation/mobilepatterns/gettingstarted$ file:///home/runner/work/mobile-design-patterns/mobile-design-patterns/Sources/MobilePatterns/MobilePatterns.docc/GettingStarted.md',
   '^https://muhittincamdali\.github\.io/mobile-design-patterns/documentation/mobilepatterns/choosingapattern$ file:///home/runner/work/mobile-design-patterns/mobile-design-patterns/Sources/MobilePatterns/MobilePatterns.docc/ChoosingAPattern.md',
   '^https://muhittincamdali\.github\.io/mobile-design-patterns/documentation/mobilepatterns/loadingdatawithviewstate$ file:///home/runner/work/mobile-design-patterns/mobile-design-patterns/Sources/MobilePatterns/MobilePatterns.docc/LoadingDataWithViewState.md',
