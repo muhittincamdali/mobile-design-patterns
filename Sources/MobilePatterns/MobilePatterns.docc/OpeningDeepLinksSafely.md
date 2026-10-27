@@ -16,7 +16,8 @@ and refuse the rest without crashing or opening a half-built screen.
 4. For `http` and `https`, the host in the allowlist. `example.com.evil.test` is a different
    host and is refused.
 5. Segment count, then each segment: valid UTF-8 after percent decoding, not `.` or `..`
-   (also when written as `%2E%2E`), no control characters, not longer than
+   (also when written as `%2E%2E`), no `/` or `\` after decoding (so `..%2F..%2Fetc` cannot
+   reach a pattern as `../../etc`), no control characters, not longer than
    ``DeepLinkParser/Limits/maxValueLength``.
 6. Query item count and the same checks for each name and value.
 7. The first pattern whose segments match; its closure builds the stack or refuses it.

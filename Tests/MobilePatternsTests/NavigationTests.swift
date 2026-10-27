@@ -153,6 +153,15 @@ struct DeepLinkParserTests {
         #expect(error("https://example.com/./articles") == .malformedPath)
     }
 
+    @Test func encodedSeparatorsInsideASegmentAreRefused() {
+        // Decoded, these would hand `users/:name` the value "../../etc/passwd".
+        #expect(error("https://example.com/users/..%2F..%2Fetc%2Fpasswd") == .malformedPath)
+        #expect(error("https://example.com/users/..%5C..%5Cetc") == .malformedPath)
+        #expect(error("https://example.com/users/a%2fb") == .malformedPath)
+        #expect(error("patterns://users/..%2F") == .malformedPath)
+        #expect(error("patterns://users%2Fme") == .malformedPath)
+    }
+
     @Test func invalidPercentEncodingIsRefused() {
         #expect(error("https://example.com/users/%FF") == .malformedPath)
     }

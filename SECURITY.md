@@ -21,8 +21,9 @@ CHANGELOG entry and, when users need to act, a GitHub security advisory.
 
 The types most relevant to security are the ones that handle input from outside the app:
 
-- `DeepLinkParser`: scheme and host allowlists, credentials, `.` and `..` segments, percent
-  encoding, control characters, and size limits on URLs, segments and query items.
+- `DeepLinkParser`: scheme and host allowlists, credentials, `.` and `..` segments, `/` and `\`
+  encoded inside a segment, percent encoding, control characters, and size limits on URLs,
+  segments and query items.
 - `RequestBuilder`: header names and values (header injection), path segment and query
   encoding, base URL checks.
 

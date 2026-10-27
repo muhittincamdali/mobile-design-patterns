@@ -4,9 +4,9 @@ import Foundation
 ///
 /// A deep link is input from outside the app: anyone can put one in a message or a web page. The
 /// parser only accepts the schemes and hosts you list, refuses URLs with credentials, `.` or `..`
-/// segments, control characters, and anything over the ``Limits``, and only then matches the
-/// path against your patterns. A pattern returns the whole stack, so the back button works
-/// after a link opened a detail screen.
+/// segments, a `/` or `\` encoded inside a segment (`%2F`, `%5C`), control characters, and
+/// anything over the ``Limits``, and only then matches the path against your patterns. A pattern
+/// returns the whole stack, so the back button works after a link opened a detail screen.
 ///
 /// ```swift
 /// let parser = DeepLinkParser<AppRoute>(
@@ -121,9 +121,11 @@ public struct DeepLinkParser<Route>: Sendable {
 
         var segments: [String] = []
         for (index, raw) in rawSegments.enumerated() {
-            guard let decoded = raw.removingPercentEncoding, decoded != ".", decoded != ".." else {
-                throw .malformedPath
-            }
+            // `%2F` and `%5C` decode to separators: `..%2F..` would reach a pattern as one value
+            // that reads as a path, so a decoded segment must still be a single segment.
+            guard let decoded = raw.removingPercentEncoding, decoded != ".", decoded != "..",
+                  !decoded.contains(where: { $0 == "/" || $0 == "\\" })
+            else { throw .malformedPath }
             try check(decoded, position: "segment \(index + 1)", allowEmpty: false)
             segments.append(decoded)
         }
@@ -218,7 +220,8 @@ public enum DeepLinkError: Error, Equatable, Sendable {
     case unknownHost
     /// The URL carries a user name or password.
     case credentialsNotAllowed
-    /// A path segment is `.` or `..`, or the path or query is not valid percent encoding.
+    /// A path segment is `.` or `..`, a segment decodes to text with a `/` or `\` in it (`%2F`,
+    /// `%5C`), or the path or query is not valid percent encoding.
     case malformedPath
     /// The path has more segments than ``DeepLinkParser/Limits/maxSegments``.
     case tooManySegments
