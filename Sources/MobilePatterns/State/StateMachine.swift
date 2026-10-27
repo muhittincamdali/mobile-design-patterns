@@ -35,9 +35,11 @@ public struct StateMachine<State, Event> {
 
     /// Creates a machine in `initial` state.
     ///
-    /// - Parameter transition: Returns the state after `event` in `state`, or `nil` when the event
-    ///   is not allowed there. It must not have side effects; run them after ``send(_:)``
-    ///   returns a transition.
+    /// - Parameters:
+    ///   - initial: The state before any event.
+    ///   - transition: Returns the state after `event` in `state`, or `nil` when the event is
+    ///     not allowed there. It must not have side effects; run them after ``send(_:)``
+    ///     returns a transition.
     public init(initial: State, transition: @escaping @Sendable (State, Event) -> State?) {
         self.state = initial
         self.transition = transition

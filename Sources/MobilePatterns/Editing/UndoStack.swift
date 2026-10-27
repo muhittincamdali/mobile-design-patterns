@@ -56,7 +56,9 @@ public struct UndoStack<Document> {
 
     /// Creates an editor for `document`.
     ///
-    /// - Parameter limit: Most commands kept for undo. Values below 1 are treated as 1.
+    /// - Parameters:
+    ///   - document: The document before any command.
+    ///   - limit: Most commands kept for undo. Values below 1 are treated as 1.
     public init(_ document: Document, limit: Int = 100) {
         self.document = document
         self.limit = max(1, limit)
