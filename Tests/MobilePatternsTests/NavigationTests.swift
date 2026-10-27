@@ -45,6 +45,14 @@ struct RouterTests {
         #expect(router.path == [.list, .detail(1)])
     }
 
+    @Test func writesToThePathAreCutToMaxDepth() {
+        let router = Router<Route>(maxDepth: 2)
+        for id in 0..<1_000 { router.path.append(.detail(id)) }
+        #expect(router.path == [.detail(0), .detail(1)])
+        router.path = [.list, .settings, .detail(9)]
+        #expect(router.path == [.list, .settings])
+    }
+
     @Test func maxDepthBelowOneBecomesOne() {
         let router = Router<Route>(maxDepth: -4)
         #expect(router.maxDepth == 1)

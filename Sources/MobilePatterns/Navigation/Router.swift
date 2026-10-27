@@ -17,15 +17,23 @@ import Observation
 /// ```
 ///
 /// The stack has a depth limit, so a malformed deep link or a push in a loop cannot grow it
-/// without bound.
+/// without bound. The limit also holds for writes to ``path`` itself, which is where the
+/// `NavigationStack` binding and `NavigationLink(value:)` push.
 @MainActor
 @Observable
 public final class Router<Route: Hashable> {
     /// The routes above the root view, bottom first. Bind it to `NavigationStack(path:)`.
-    public var path: [Route]
+    ///
+    /// A stack deeper than ``maxDepth`` written here is cut to its first ``maxDepth`` routes, so
+    /// a push past the limit through the binding is undone instead of growing the stack.
+    public var path: [Route] {
+        didSet {
+            if path.count > maxDepth { path = Array(path.prefix(maxDepth)) }
+        }
+    }
 
     /// The most routes ``path`` may hold. ``push(_:)`` and ``replaceStack(with:)`` refuse to go
-    /// beyond it.
+    /// beyond it, and writes to ``path`` are cut to it.
     public let maxDepth: Int
 
     /// Creates a router.
