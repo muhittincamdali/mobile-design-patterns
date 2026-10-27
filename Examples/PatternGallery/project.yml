@@ -1,0 +1,50 @@
+# XcodeGen spec for PatternGallery.xcodeproj. The project file is committed, so XcodeGen is only
+# needed after changing this file: run `xcodegen` in this folder.
+name: PatternGallery
+options:
+  bundleIdPrefix: io.github.muhittincamdali
+  deploymentTarget:
+    iOS: "17.0"
+    macOS: "14.0"
+packages:
+  MobilePatterns:
+    path: ../..
+targets:
+  PatternGallery:
+    type: application
+    supportedDestinations: [iOS, macOS]
+    sources: [PatternGallery]
+    dependencies:
+      - package: MobilePatterns
+        product: MobilePatterns
+    info:
+      path: PatternGallery/Info.plist
+      properties:
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleURLTypes:
+          - CFBundleURLName: io.github.muhittincamdali.PatternGallery
+            CFBundleURLSchemes: [patterns]
+    settings:
+      base:
+        SWIFT_VERSION: "6.0"
+        MARKETING_VERSION: "2.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Pattern Gallery
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+        TARGETED_DEVICE_FAMILY: "1,2"
+        CODE_SIGN_STYLE: Automatic
+        # Sign to run locally on the Mac; the simulator needs no signing.
+        "CODE_SIGN_IDENTITY[sdk=macosx*]": "-"
+        ENABLE_USER_SCRIPT_SANDBOXING: YES
+schemes:
+  PatternGallery:
+    build:
+      targets:
+        PatternGallery: all
+    run:
+      config: Debug

@@ -1,0 +1,1 @@
+../../Examples/PatternGallery/PatternGallery/ReadmeSamples.swift
