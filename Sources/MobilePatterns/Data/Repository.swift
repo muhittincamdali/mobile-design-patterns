@@ -50,13 +50,16 @@ public actor Repository<Key: Hashable & Sendable, Value: Sendable> {
     private let fetch: @Sendable (Key) async throws -> Value
     private let now: @Sendable () -> ContinuousClock.Instant
     private struct Flight {
+        let id: UInt64
         let task: Task<Value, any Error>
-        /// Set when the key was stored, invalidated or cleared while the fetch ran.
+        /// Set when the key was stored, invalidated or cleared while the fetch ran. Later calls
+        /// start a new fetch instead of joining this one.
         var isOutdated = false
     }
 
     private var entries: [Key: Entry] = [:]
     private var useCounter: UInt64 = 0
+    private var flightCounter: UInt64 = 0
     private var inFlight: [Key: Flight] = [:]
 
     /// Number of calls that joined a running fetch instead of starting one, for tests.
@@ -129,19 +132,22 @@ public actor Repository<Key: Hashable & Sendable, Value: Sendable> {
         }
     }
 
-    /// Stores `value` for `key`, for example after the app changed it locally.
+    /// Stores `value` for `key`, for example after the app changed it locally. A fetch that is
+    /// running for it is not stored when it ends, and later calls do not join it.
     public func store(_ value: Value, for key: Key) {
         inFlight[key]?.isOutdated = true
         insert(value, for: key)
     }
 
-    /// Removes the entry for `key`. A fetch that is running for it is not stored when it ends.
+    /// Removes the entry for `key`. A fetch that is running for it is not stored when it ends,
+    /// and later calls start a new fetch instead of joining it.
     public func invalidate(_ key: Key) {
         inFlight[key]?.isOutdated = true
         entries[key] = nil
     }
 
-    /// Removes every entry. Fetches that are running are not stored when they end.
+    /// Removes every entry. Fetches that are running are not stored when they end, and later calls
+    /// do not join them.
     public func removeAll() {
         for key in inFlight.keys { inFlight[key]?.isOutdated = true }
         entries.removeAll()
@@ -157,18 +163,24 @@ public actor Repository<Key: Hashable & Sendable, Value: Sendable> {
     }
 
     private func load(_ key: Key) async throws -> Value {
-        if let running = inFlight[key] {
+        if let running = inFlight[key], !running.isOutdated {
             joinedCount += 1
             return try await running.task.value
         }
+        flightCounter &+= 1
+        let id = flightCounter
         let fetch = self.fetch
-        let flight = Flight(task: Task { try await fetch(key) })
-        inFlight[key] = flight
-        let result = await flight.task.result
-        let isOutdated = inFlight[key]?.isOutdated ?? true
-        inFlight[key] = nil
+        let task = Task { try await fetch(key) }
+        inFlight[key] = Flight(id: id, task: task)
+        let result = await task.result
+        // A newer fetch may have taken this key's slot after an invalidate or store; leave it.
+        var isCurrent = false
+        if let flight = inFlight[key], flight.id == id {
+            isCurrent = !flight.isOutdated
+            inFlight[key] = nil
+        }
         let value = try result.get()
-        if !isOutdated { insert(value, for: key) }
+        if isCurrent { insert(value, for: key) }
         return value
     }
 

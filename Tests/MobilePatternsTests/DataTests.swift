@@ -284,6 +284,41 @@ struct RepositoryTests {
         #expect(try await repository.value(for: 1, policy: .cacheOnly) == "local edit")
     }
 
+    @Test func callsAfterInvalidateDoNotJoinTheOldFetch() async throws {
+        let firstGate = Gate()
+        let calls = CallCounter()
+        let repository = Repository<Int, String> { _ in
+            let call = calls.increment()
+            if call == 1 { await firstGate.wait() }
+            return "fetch \(call)"
+        }
+        async let old = repository.value(for: 1)
+        #expect(await waitUntil { calls.count == 1 })
+        await repository.invalidate(1)
+        #expect(try await repository.value(for: 1) == "fetch 2")
+        #expect(await repository.joinedCount == 0)
+        await firstGate.open()
+        #expect(try await old == "fetch 1")
+        #expect(try await repository.value(for: 1, policy: .cacheOnly) == "fetch 2")
+    }
+
+    @Test func reloadAfterStoreDoesNotJoinTheOldFetch() async throws {
+        let firstGate = Gate()
+        let calls = CallCounter()
+        let repository = Repository<Int, String> { _ in
+            let call = calls.increment()
+            if call == 1 { await firstGate.wait() }
+            return "fetch \(call)"
+        }
+        async let old = repository.value(for: 1)
+        #expect(await waitUntil { calls.count == 1 })
+        await repository.store("local edit", for: 1)
+        #expect(try await repository.value(for: 1, policy: .reloadIgnoringCache) == "fetch 2")
+        await firstGate.open()
+        #expect(try await old == "fetch 1")
+        #expect(try await repository.value(for: 1, policy: .cacheOnly) == "fetch 2")
+    }
+
     @Test func removeAllEmptiesTheCache() async throws {
         let source = Source()
         let repository = Repository<String, String>(fetch: source.fetch)
