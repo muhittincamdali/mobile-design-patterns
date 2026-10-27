@@ -6,8 +6,8 @@ import Foundation
 /// Every step returns a new builder, so a configured base can be shared and extended. `build()`
 /// percent encodes path segments and query values (a `+` in a value is sent as `%2B`, not left
 /// for the server to read as a space), and refuses header names that are not HTTP tokens,
-/// header values with line breaks (header injection), `.` and `..` segments, a body on `GET`, and
-/// timeouts that are not positive.
+/// header values with line breaks (header injection), `.` and `..` segments (also as a part such
+/// as `../admin`), a body on `GET`, and timeouts that are not positive.
 ///
 /// ```swift
 /// let api = RequestBuilder(baseURL: URL(string: "https://api.example.com/v1")!)
@@ -51,7 +51,8 @@ public struct RequestBuilder: Sendable {
     }
 
     /// Appends path segments. Each one is percent encoded as a whole, so a `/` inside a value
-    /// stays part of that segment.
+    /// stays part of that segment. ``build()`` refuses a segment that is empty, `.` or `..`, or
+    /// has a `.` or `..` part between `/` or `\` characters, such as `../admin`.
     public func path(_ segments: String...) -> Self {
         var copy = self
         copy.segments += segments
@@ -102,7 +103,7 @@ public struct RequestBuilder: Sendable {
               components.query == nil, components.fragment == nil
         else { throw .invalidBaseURL }
 
-        for (index, segment) in segments.enumerated() where segment.isEmpty || segment == "." || segment == ".." {
+        for (index, segment) in segments.enumerated() where segment.isEmpty || Self.hasDotPart(segment) {
             throw .invalidPathSegment(position: index + 1)
         }
         let basePath = components.percentEncodedPath.hasSuffix("/")
@@ -154,6 +155,14 @@ public struct RequestBuilder: Sendable {
         return set
     }()
 
+    /// Whether `segment`, or a part of it between `/` or `\` characters, is `.` or `..`. The
+    /// separators are sent encoded (`%2F`, `%5C`), but a server that decodes them before routing
+    /// would read `../admin` as a step up.
+    private static func hasDotPart(_ segment: String) -> Bool {
+        let parts = segment.split(omittingEmptySubsequences: false) { $0 == "/" || $0 == "\\" }
+        return parts.contains { $0 == "." || $0 == ".." }
+    }
+
     private static func encodeQuery(_ text: String) -> String {
         text.addingPercentEncoding(withAllowedCharacters: queryAllowed) ?? ""
     }
@@ -176,7 +185,8 @@ public enum RequestBuilderError: Error, Equatable, Sendable {
     /// The base URL is not `http` or `https`, has no host, or carries a query, fragment or
     /// credentials.
     case invalidBaseURL
-    /// A path segment is empty, `.` or `..`. Carries its position among the segments added with
+    /// A path segment is empty, `.` or `..`, or has a `.` or `..` part between `/` or `\`
+    /// characters. Carries its position among the segments added with
     /// ``RequestBuilder/path(_:)``, counted from 1.
     case invalidPathSegment(position: Int)
     /// A header name is empty or has characters outside the HTTP token set.

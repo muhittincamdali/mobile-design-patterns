@@ -118,6 +118,16 @@ struct RequestBuilderTests {
         #expect(error(Self.base.path("a").path("b", "")) == .invalidPathSegment(position: 3))
     }
 
+    @Test func refusesDotPartsBehindASlashInASegment() throws {
+        // Sent as `..%2Fadmin`; a server that decodes `%2F` before routing would read `../admin`.
+        #expect(error(Self.base.path("../admin")) == .invalidPathSegment(position: 1))
+        #expect(error(Self.base.path("a", "x/..")) == .invalidPathSegment(position: 2))
+        #expect(error(Self.base.path("a", "x/./y")) == .invalidPathSegment(position: 2))
+        #expect(error(Self.base.path("..\\admin")) == .invalidPathSegment(position: 1))
+        let request = try Self.base.path("a/b", "v1.2", "...").build()
+        #expect(request.url?.absoluteString == "https://api.example.com/v1/a%2Fb/v1.2/...")
+    }
+
     @Test func refusesHeaderInjection() {
         #expect(error(Self.base.header("X-Note", "ok\r\nSet-Cookie: a=b")) == .invalidHeaderValue)
         #expect(error(Self.base.header("X-Note", "a\nb")) == .invalidHeaderValue)
