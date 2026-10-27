@@ -23,6 +23,9 @@ public struct AsyncLoader<Input: Sendable, Output: Sendable>: Sendable {
         self.body = body
     }
 
+    /// The most calls ``retrying(maxAttempts:delay:when:)`` makes, whatever count it is given.
+    public static var maxRetryAttempts: Int { 100 }
+
     /// Runs the loader.
     public func callAsFunction(_ input: Input) async throws -> Output {
         try await body(input)
@@ -35,7 +38,8 @@ public struct AsyncLoader<Input: Sendable, Output: Sendable>: Sendable {
     ///
     /// - Parameters:
     ///   - maxAttempts: Total number of calls, the first one included. Values below 1 are treated
-    ///     as 1.
+    ///     as 1 and values above ``maxRetryAttempts`` as that limit, so a misconfigured count
+    ///     cannot keep a failing call looping.
     ///   - delay: Wait between two attempts. Negative values are treated as zero.
     ///   - shouldRetry: Decides whether an error is worth another attempt.
     public func retrying(
@@ -43,7 +47,7 @@ public struct AsyncLoader<Input: Sendable, Output: Sendable>: Sendable {
         delay: Duration = .zero,
         when shouldRetry: @escaping @Sendable (any Error) -> Bool = { _ in true }
     ) -> AsyncLoader {
-        let attempts = max(1, maxAttempts)
+        let attempts = min(max(1, maxAttempts), Self.maxRetryAttempts)
         let pause = max(.zero, delay)
         return AsyncLoader { input in
             var attempt = 1

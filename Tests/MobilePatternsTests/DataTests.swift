@@ -36,6 +36,16 @@ struct AsyncLoaderTests {
         }
     }
 
+    @Test func retryingNeverExceedsTheAttemptCap() async {
+        let calls = CallCounter()
+        let loader = AsyncLoader<Int, Int> { _ in
+            calls.increment()
+            throw TestError(code: 0)
+        }.retrying(maxAttempts: Int.max)
+        await #expect(throws: TestError.self) { try await loader(0) }
+        #expect(calls.count == AsyncLoader<Int, Int>.maxRetryAttempts)
+    }
+
     @Test func retryingRespectsThePredicate() async {
         let calls = CallCounter()
         let loader = AsyncLoader<Int, Int> { _ in
