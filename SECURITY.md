@@ -1,40 +1,34 @@
-# Security Policy
+# Security policy
 
-## Reporting Security Issues
+## Supported versions
 
-We take security seriously. If you find security vulnerabilities in code examples or documentation, please report them.
+| Version | Supported                        |
+| ------- | -------------------------------- |
+| 2.x     | Yes                              |
+| 1.x     | No (documentation only, no code) |
 
-### How to Report
+## Reporting a vulnerability
 
-1. **DO NOT** open a public issue
-2. Use GitHub's private vulnerability reporting
-3. Or contact the maintainer directly
+Report it privately through
+[GitHub private vulnerability reporting](https://github.com/muhittincamdali/mobile-design-patterns/security/advisories/new),
+not in a public issue. Include the type involved, a test or snippet that shows the problem, and
+the version or commit.
 
-### What to Report
+You will get an answer within seven days. Fixes are released as a patch version with a
+CHANGELOG entry and, when users need to act, a GitHub security advisory.
 
-- Code examples with security flaws
-- Patterns that could lead to vulnerabilities
-- Links to malicious resources
-- Any content promoting insecure practices
+## Scope
 
-### Response Timeline
+The types most relevant to security are the ones that handle input from outside the app:
 
-- **Acknowledgment**: Within 48 hours
-- **Assessment**: Within 5 days
-- **Resolution**: Based on severity
+- `DeepLinkParser`: scheme and host allowlists, credentials, `.` and `..` segments, percent
+  encoding, control characters, and size limits on URLs, segments and query items.
+- `RequestBuilder`: header names and values (header injection), path segment and query
+  encoding, base URL checks.
 
-## Security Considerations for Patterns
+A way to get a URL past `DeepLinkParser` that its documentation says it refuses, or to inject a
+header through `RequestBuilder`, is a vulnerability. So is unbounded memory growth in a type that
+documents a limit (`Router`, `Repository`, `UndoStack`, `Broadcaster`).
 
-When contributing, ensure patterns don't introduce:
-- Memory leaks
-- Data exposure
-- Insecure data storage
-- Unsafe threading practices
-
-## Supported Versions
-
-| Version | Supported          |
-| ------- | ------------------ |
-| Latest  | :white_check_mark: |
-
-Thank you for helping maintain secure code examples!
+The example app's sample data and the `example.com` hosts in samples are placeholders, not
+services.
