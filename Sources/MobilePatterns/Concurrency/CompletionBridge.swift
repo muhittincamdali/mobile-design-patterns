@@ -18,7 +18,9 @@ import os
 /// ```
 ///
 /// - Parameters:
-///   - onCancel: Called once when the task is cancelled before a result arrived.
+///   - onCancel: Called once when the task is cancelled after `start` was called and before a
+///     result arrived. It is not called when the task was cancelled before `start`, because
+///     there is no request to stop then.
 ///   - start: Starts the callback API and passes `completion` to it. It is not called when the
 ///     task is already cancelled.
 /// - Returns: The value of the first `.success` handed to `completion`.
@@ -34,7 +36,7 @@ public func withCompletion<Value: Sendable>(
             start { result in gate.resume(with: result) }
         }
     } onCancel: {
-        if gate.resume(with: .failure(CancellationError())) { onCancel() }
+        if gate.cancel() { onCancel() }
     }
 }
 
@@ -59,6 +61,24 @@ final class ResumeOnce<Value: Sendable>: Sendable {
         guard let early else { return true }
         continuation.resume(with: early)
         return false
+    }
+
+    /// Delivers `CancellationError` if nothing was delivered yet. Returns whether it resumed an
+    /// installed continuation, that is whether the work was started and may need stopping.
+    func cancel() -> Bool {
+        let continuation: CheckedContinuation<Value, any Error>? = state.withLock { state in
+            guard !state.isDone else { return nil }
+            state.isDone = true
+            guard let continuation = state.continuation else {
+                state.early = .failure(CancellationError())
+                return nil
+            }
+            state.continuation = nil
+            return continuation
+        }
+        guard let continuation else { return false }
+        continuation.resume(throwing: CancellationError())
+        return true
     }
 
     /// Delivers `result` if nothing was delivered yet. Returns whether it was the first.

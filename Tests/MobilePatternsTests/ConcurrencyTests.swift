@@ -47,13 +47,15 @@ struct CompletionBridgeTests {
 
     @Test func alreadyCancelledTaskNeverStartsTheWork() async {
         let starts = CallCounter()
+        let cancels = CallCounter()
         let task = Task {
             while !Task.isCancelled { await Task.yield() }
-            let _: Int = try await withCompletion { _ in starts.increment() }
+            let _: Int = try await withCompletion(onCancel: { cancels.increment() }) { _ in starts.increment() }
         }
         task.cancel()
         await #expect(throws: CancellationError.self) { try await task.value }
         #expect(starts.count == 0)
+        #expect(cancels.count == 0)
     }
 }
 
