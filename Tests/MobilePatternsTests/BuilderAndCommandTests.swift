@@ -73,3 +73,87 @@ struct UndoStackTests {
         #expect(editor.document.tags == ["a"])
     }
 }
+
+@Suite("RequestBuilder")
+struct RequestBuilderTests {
+    static let base = RequestBuilder(baseURL: URL(string: "https://api.example.com/v1")!)
+
+    func error(_ builder: RequestBuilder) -> RequestBuilderError? {
+        do {
+            _ = try builder.build()
+            return nil
+        } catch {
+            return error
+        }
+    }
+
+    @Test func encodesSegmentsAndQueryValues() throws {
+        let request = try Self.base
+            .path("users", "a/b c", "orders")
+            .query("q", "1+1=2 & more")
+            .query("missing", nil)
+            .query("emoji", "ü")
+            .build()
+        #expect(request.url?.absoluteString
+            == "https://api.example.com/v1/users/a%2Fb%20c/orders?q=1%2B1%3D2%20%26%20more&emoji=%C3%BC")
+        #expect(request.httpMethod == "GET")
+        #expect(request.timeoutInterval == 60)
+    }
+
+    @Test func baseWithTrailingSlashHasNoDoubleSlash() throws {
+        let request = try RequestBuilder(baseURL: URL(string: "https://api.example.com/")!).path("ping").build()
+        #expect(request.url?.absoluteString == "https://api.example.com/ping")
+    }
+
+    @Test func refusesInvalidBaseURLs() {
+        for base in ["ftp://example.com", "https:///path", "https://user:pw@example.com", "https://example.com?a=1",
+                     "https://example.com#top", "file:///etc/hosts"] {
+            #expect(error(RequestBuilder(baseURL: URL(string: base)!)) == .invalidBaseURL, "\(base)")
+        }
+    }
+
+    @Test func refusesDotAndEmptySegments() {
+        #expect(error(Self.base.path("..")) == .invalidPathSegment(".."))
+        #expect(error(Self.base.path("a", ".")) == .invalidPathSegment("."))
+        #expect(error(Self.base.path("")) == .invalidPathSegment(""))
+    }
+
+    @Test func refusesHeaderInjection() {
+        #expect(error(Self.base.header("X-Note", "ok\r\nSet-Cookie: a=b")) == .invalidHeaderValue(name: "X-Note"))
+        #expect(error(Self.base.header("X-Note", "a\nb")) == .invalidHeaderValue(name: "X-Note"))
+        #expect(error(Self.base.header("X-Note", "a\0b")) == .invalidHeaderValue(name: "X-Note"))
+        let long = String(repeating: "a", count: RequestBuilder.maxHeaderValueLength + 1)
+        #expect(error(Self.base.header("X-Note", long)) == .invalidHeaderValue(name: "X-Note"))
+    }
+
+    @Test func refusesInvalidHeaderNames() {
+        for name in ["", "Bad Name", "Bad:Name", "Ünicode", "a\r\nb"] {
+            #expect(error(Self.base.header(name, "1")) == .invalidHeaderName(name))
+        }
+    }
+
+    @Test func headerNamesReplaceWithoutCase() throws {
+        let request = try Self.base.header("Accept", "text/plain").header("accept", "application/json").build()
+        #expect(request.value(forHTTPHeaderField: "Accept") == "application/json")
+        #expect(request.allHTTPHeaderFields?.count == 1)
+    }
+
+    @Test func jsonBodySetsContentType() throws {
+        struct Payload: Codable, Equatable { let name: String }
+        let request = try Self.base.method(.post).path("users").json(Payload(name: "Ada")).build()
+        #expect(request.httpMethod == "POST")
+        #expect(request.value(forHTTPHeaderField: "Content-Type") == "application/json")
+        #expect(try JSONDecoder().decode(Payload.self, from: request.httpBody ?? Data()) == Payload(name: "Ada"))
+    }
+
+    @Test func bodyIsRefusedOnGetAndHead() {
+        #expect(error(Self.base.body(Data([1]), contentType: "application/octet-stream")) == .bodyNotAllowed("GET"))
+        #expect(error(Self.base.method(.head).body(Data(), contentType: "text/plain")) == .bodyNotAllowed("HEAD"))
+    }
+
+    @Test func timeoutMustBePositive() throws {
+        #expect(error(Self.base.timeout(.zero)) == .invalidTimeout)
+        #expect(error(Self.base.timeout(.seconds(-3))) == .invalidTimeout)
+        #expect(try Self.base.timeout(.milliseconds(1_500)).build().timeoutInterval == 1.5)
+    }
+}
