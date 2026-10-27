@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@16017df9aef14bbde7c1c89e6d452012f4124845 status=reviewed -->
+<!-- i18n-source: README.md@7e585ab27e1814cb9809e32b683be9fa941ed2ec status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-light.svg" alt="Mobile Design Patterns: Design patterns for iOS and macOS apps as tested Swift types, with Flutter and React Native ports."></picture></p>
@@ -34,7 +34,7 @@ Swift-пакет с паттернами проектирования для п�
   `RequestBuilder`; никаких базовых классов, никакого фреймворка, который нужно принимать целиком, и никаких зависимостей.
 - **Граничные случаи учтены и покрыты тестами** — результаты запросов, которых обогнал более новый запрос, не кешируются, при перезагрузке список остаётся на экране, отменённая операция никогда не повторяется, медленный подписчик не может раздуть память, значения заголовков с переводами строк отклоняются, а числовые параметры ссылок не приводят к аварийному завершению при переполнении.
 - **Языковой режим Swift 6** — пакет собирается со строгой проверкой конкурентности и без предупреждений; общее состояние находится в actor или за блокировкой.
-- **Протестировано** — 96 тестов Swift Testing на macOS и 95 на симуляторе iPhone (exit-тесты запускаются только на macOS), включая примеры из README и настоящий клиент демонстрационного приложения, работающий с подменённым через stub `URLSession`.
+- **Протестировано** — 100 тестов Swift Testing на macOS и 99 на симуляторе iPhone (exit-тесты запускаются только на macOS), включая примеры из README и настоящий клиент демонстрационного приложения, работающий с подменённым через stub `URLSession`.
 - **Демонстрационное приложение** — [PatternGallery](Examples/PatternGallery) для iOS и macOS, по одному экрану на каждый паттерн; CI собирает его для обеих платформ.
 - **Порты для Flutter и React Native** — состояние представления, конечный автомат и отмена действий в виде пакета для Flutter (11 тестов) и пакета на TypeScript с React-хуком (17 тестов), в папке [`ports/`](ports).
 

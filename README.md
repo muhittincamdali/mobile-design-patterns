@@ -41,7 +41,7 @@ Flutter and React Native packages.
   with line breaks are refused, numeric link parameters cannot trap on overflow.
 - **Swift 6 language mode** — the package builds with strict concurrency checking and no
   warnings; shared state lives in actors or behind a lock.
-- **Tested** — 96 Swift Testing tests on macOS and 95 on an iPhone simulator (exit tests run on
+- **Tested** — 100 Swift Testing tests on macOS and 99 on an iPhone simulator (exit tests run on
   macOS only), including the README samples and the example app's live client against a
   stubbed `URLSession`.
 - **Example app** — [PatternGallery](Examples/PatternGallery) for iOS and macOS, with one screen

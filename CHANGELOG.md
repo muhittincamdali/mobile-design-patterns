@@ -32,7 +32,7 @@ were removed, so this is a major version.
     - `UndoStack` and `EditCommand`: undo and redo with a history limit.
     - `RequestBuilder`: URL requests with encoded paths and queries, header injection checks, no
       body on `GET` or `HEAD`, and positive timeouts.
-- 96 Swift Testing tests, including the README samples and a live client against a stubbed
+- 100 Swift Testing tests, including the README samples and a live client against a stubbed
   `URLSession`.
 - `PatternGallery`, an iOS and macOS example app with one screen per pattern and a `patterns://`
   URL scheme.

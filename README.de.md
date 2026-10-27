@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@16017df9aef14bbde7c1c89e6d452012f4124845 status=reviewed -->
+<!-- i18n-source: README.md@7e585ab27e1814cb9809e32b683be9fa941ed2ec status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-light.svg" alt="Mobile Design Patterns: Design patterns for iOS and macOS apps as tested Swift types, with Flutter and React Native ports."></picture></p>
@@ -34,7 +34,7 @@ Ein Swift-Paket mit Entwurfsmustern für iOS- und macOS-Apps, geschrieben als kl
   `RequestBuilder`; keine Basisklassen, kein Framework, das du übernehmen musst, keine Abhängigkeiten.
 - **Grenzfälle behandelt und getestet** — von neueren Anfragen überholte Abrufe werden nicht zwischengespeichert, ein Neuladen lässt die Liste auf dem Bildschirm stehen, ein Abbruch wird nie wiederholt, ein langsamer Abonnent kann den Speicher nicht anwachsen lassen, Header-Werte mit Zeilenumbrüchen werden abgelehnt, und numerische Link-Parameter können bei einem Überlauf nicht abstürzen.
 - **Swift-6-Sprachmodus** — das Paket baut mit strenger Concurrency-Prüfung und ohne Warnungen; geteilter Zustand liegt in Actors oder hinter einer Sperre.
-- **Getestet** — 96 Swift-Testing-Tests auf macOS und 95 auf einem iPhone-Simulator (Exit-Tests laufen nur auf macOS), darunter die README-Beispiele und der echte Client der Beispiel-App gegen eine per Stub ersetzte `URLSession`.
+- **Getestet** — 100 Swift-Testing-Tests auf macOS und 99 auf einem iPhone-Simulator (Exit-Tests laufen nur auf macOS), darunter die README-Beispiele und der echte Client der Beispiel-App gegen eine per Stub ersetzte `URLSession`.
 - **Beispiel-App** — [PatternGallery](Examples/PatternGallery) für iOS und macOS, mit einem Bildschirm pro Muster; CI baut sie für beide Plattformen.
 - **Flutter- und React-Native-Ports** — View-State, State Machine und Rückgängig als Flutter-Paket (11 Tests) und als TypeScript-Paket mit einem React-Hook (17 Tests), in [`ports/`](ports).
 

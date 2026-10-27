@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@16017df9aef14bbde7c1c89e6d452012f4124845 status=reviewed -->
+<!-- i18n-source: README.md@7e585ab27e1814cb9809e32b683be9fa941ed2ec status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-light.svg" alt="Mobile Design Patterns: Design patterns for iOS and macOS apps as tested Swift types, with Flutter and React Native ports."></picture></p>
@@ -34,7 +34,7 @@ Un paquete Swift de patrones de diseño para apps de iOS y macOS, escritos como 
   `RequestBuilder`; sin clases base, sin ningún framework que adoptar y sin dependencias.
 - **Casos límite resueltos y probados** — las cargas que otra más reciente adelanta no se guardan en caché, una recarga mantiene la lista en pantalla, una cancelación nunca se reintenta, un suscriptor lento no puede hacer crecer la memoria, se rechazan los valores de cabecera con saltos de línea y los parámetros numéricos de un enlace no pueden hacer fallar la app por desbordamiento.
 - **Modo de lenguaje Swift 6** — el paquete se compila con comprobación estricta de concurrencia y sin advertencias; el estado compartido vive en actors o detrás de un bloqueo.
-- **Probado** — 96 pruebas de Swift Testing en macOS y 95 en un simulador de iPhone (las exit tests solo se ejecutan en macOS), incluidos los ejemplos del README y el cliente real de la app de ejemplo frente a un `URLSession` simulado con stubs.
+- **Probado** — 100 pruebas de Swift Testing en macOS y 99 en un simulador de iPhone (las exit tests solo se ejecutan en macOS), incluidos los ejemplos del README y el cliente real de la app de ejemplo frente a un `URLSession` simulado con stubs.
 - **App de ejemplo** — [PatternGallery](Examples/PatternGallery) para iOS y macOS, con una pantalla por patrón; CI la compila para ambas plataformas.
 - **Ports a Flutter y React Native** — estado de vista, máquina de estados y deshacer como paquete de Flutter (11 pruebas) y como paquete de TypeScript con un hook de React (17 pruebas), en [`ports/`](ports).
 

@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@16017df9aef14bbde7c1c89e6d452012f4124845 status=reviewed -->
+<!-- i18n-source: README.md@7e585ab27e1814cb9809e32b683be9fa941ed2ec status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/mobile-design-patterns/main/.github/brand/banner-light.svg" alt="Mobile Design Patterns: Design patterns for iOS and macOS apps as tested Swift types, with Flutter and React Native ports."></picture></p>
@@ -34,7 +34,7 @@
   `RequestBuilder`；没有基类，无需采用任何框架，没有依赖。
 - **边界情况均已处理并有测试** — 被后发请求超过的获取结果不会写入缓存，重新加载时列表仍留在屏幕上，已取消的操作绝不重试，缓慢的订阅者不会让内存持续增长，含换行符的 header 值会被拒绝，数值型链接参数在溢出时不会崩溃。
 - **Swift 6 语言模式** — 该包在严格的并发检查下构建，没有警告；共享状态放在 actor 中或由锁保护。
-- **经过测试** — macOS 上有 96 个 Swift Testing 测试，iPhone 模拟器上有 95 个（exit test 仅在 macOS 上运行），其中包括 README 示例，以及示例应用的真实客户端针对 stub 化的 `URLSession` 的测试。
+- **经过测试** — macOS 上有 100 个 Swift Testing 测试，iPhone 模拟器上有 99 个（exit test 仅在 macOS 上运行），其中包括 README 示例，以及示例应用的真实客户端针对 stub 化的 `URLSession` 的测试。
 - **示例应用** — 面向 iOS 和 macOS 的 [PatternGallery](Examples/PatternGallery)，每种模式一个页面；CI 会在两个平台上构建它。
 - **Flutter 和 React Native 移植版** — 视图状态、状态机和撤销，提供一个 Flutter 包（11 个测试）和一个带 React hook 的 TypeScript 包（17 个测试），位于 [`ports/`](ports)。
 
