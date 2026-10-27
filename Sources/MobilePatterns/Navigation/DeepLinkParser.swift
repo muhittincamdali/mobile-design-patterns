@@ -104,7 +104,7 @@ public struct DeepLinkParser<Route>: Sendable {
     public func routes(for url: URL) throws(DeepLinkError) -> [Route] {
         guard url.absoluteString.utf8.count <= limits.maxURLLength else { throw .tooLong }
         guard let scheme = url.scheme?.lowercased(), schemes.contains(scheme) else {
-            throw .unsupportedScheme(url.scheme ?? "")
+            throw .unsupportedScheme
         }
         guard url.user(percentEncoded: true) == nil, url.password(percentEncoded: true) == nil else {
             throw .credentialsNotAllowed
@@ -113,7 +113,7 @@ public struct DeepLinkParser<Route>: Sendable {
         var rawSegments = url.path(percentEncoded: true).split(separator: "/").map(String.init)
         let host = url.host(percentEncoded: true) ?? ""
         if Self.webSchemes.contains(scheme) {
-            guard hosts.contains(host.lowercased()) else { throw .unknownHost(host) }
+            guard hosts.contains(host.lowercased()) else { throw .unknownHost }
         } else if !host.isEmpty {
             rawSegments.insert(host, at: 0)
         }
@@ -124,7 +124,7 @@ public struct DeepLinkParser<Route>: Sendable {
             guard let decoded = raw.removingPercentEncoding, decoded != ".", decoded != ".." else {
                 throw .malformedPath
             }
-            try check(decoded, name: "segment \(index + 1)", allowEmpty: false)
+            try check(decoded, position: "segment \(index + 1)", allowEmpty: false)
             segments.append(decoded)
         }
         let query = try queryValues(of: url)
@@ -159,21 +159,20 @@ public struct DeepLinkParser<Route>: Sendable {
         }
         guard items.count <= limits.maxQueryItems else { throw .tooManyQueryItems }
         var values: [String: String] = [:]
-        for item in items where values[item.name] == nil {
+        for (index, item) in items.enumerated() where values[item.name] == nil {
             let value = item.value ?? ""
-            try check(item.name, name: item.name, allowEmpty: false)
-            try check(value, name: item.name, allowEmpty: true)
+            try check(item.name, position: "query item \(index + 1)", allowEmpty: false)
+            try check(value, position: "query item \(index + 1)", allowEmpty: true)
             values[item.name] = value
         }
         return values
     }
 
-    private func check(_ value: String, name: String, allowEmpty: Bool) throws(DeepLinkError) {
+    private func check(_ value: String, position: String, allowEmpty: Bool) throws(DeepLinkError) {
         let tooLong = value.utf8.count > limits.maxValueLength
         let hasControl = value.unicodeScalars.contains { $0.properties.generalCategory == .control }
         if tooLong || hasControl || (!allowEmpty && value.isEmpty) {
-            let printable = name.unicodeScalars.filter { $0.properties.generalCategory != .control }
-            throw .invalidValue(String(String.UnicodeScalarView(printable).prefix(32)))
+            throw .invalidValue(position)
         }
     }
 }
@@ -206,13 +205,17 @@ public struct DeepLinkParameters: Sendable, Equatable {
 }
 
 /// Why ``DeepLinkParser`` refused a URL.
+///
+/// No case carries text taken from the URL, only which check failed and, for
+/// ``invalidValue(_:)``, the position of the value. An error can therefore be logged or sent to
+/// analytics without repeating whatever the link contained.
 public enum DeepLinkError: Error, Equatable, Sendable {
     /// The URL is longer than ``DeepLinkParser/Limits/maxURLLength``.
     case tooLong
     /// The scheme is not one of the accepted schemes.
-    case unsupportedScheme(String)
+    case unsupportedScheme
     /// An `http` or `https` link points to a host that is not accepted.
-    case unknownHost(String)
+    case unknownHost
     /// The URL carries a user name or password.
     case credentialsNotAllowed
     /// A path segment is `.` or `..`, or the path or query is not valid percent encoding.
@@ -222,8 +225,8 @@ public enum DeepLinkError: Error, Equatable, Sendable {
     /// The query has more items than ``DeepLinkParser/Limits/maxQueryItems``.
     case tooManyQueryItems
     /// A path segment or query item is empty, too long or contains control characters. Carries
-    /// `"segment <n>"` for a path segment (counted from 1), or the query item's name without
-    /// control characters and cut to 32 characters.
+    /// its position, not its text: `"segment <n>"` for a path segment or `"query item <n>"` for a
+    /// query item, both counted from 1.
     case invalidValue(String)
     /// No pattern matched the path.
     case noMatch

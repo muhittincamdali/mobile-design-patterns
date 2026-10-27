@@ -60,10 +60,12 @@ guard against a pattern that builds too many routes.
 
 ### Report refusals without echoing input
 
-``DeepLinkError`` tells you which check failed. Values from the URL are not copied into it: a
-bad path segment is reported as `"segment 3"`, and a bad query item by its name without control
-characters, cut to 32 characters. That keeps log lines and analytics events from carrying
-whatever text the link contained.
+``DeepLinkError`` tells you which check failed and nothing from the URL itself. A refused
+scheme or host is reported as ``DeepLinkError/unsupportedScheme`` or
+``DeepLinkError/unknownHost`` without the text, and a bad value by its position:
+`"segment 3"` for a path segment, `"query item 2"` for a query item. That keeps log lines and
+analytics events from carrying whatever text the link contained, such as a token someone
+pasted into a link.
 
 ## See Also
 

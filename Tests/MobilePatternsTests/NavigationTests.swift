@@ -128,10 +128,10 @@ struct DeepLinkParserTests {
     }
 
     @Test func unknownSchemesAndHostsAreRefused() {
-        #expect(error("javascript://articles") == .unsupportedScheme("javascript"))
-        #expect(error("http://example.com/articles") == .unsupportedScheme("http"))
-        #expect(error("https://example.com.evil.test/articles") == .unknownHost("example.com.evil.test"))
-        #expect(error("https:/articles") == .unknownHost(""))
+        #expect(error("javascript://articles") == .unsupportedScheme)
+        #expect(error("http://example.com/articles") == .unsupportedScheme)
+        #expect(error("https://example.com.evil.test/articles") == .unknownHost)
+        #expect(error("https:/articles") == .unknownHost)
     }
 
     @Test func credentialsAreRefused() {
@@ -151,11 +151,24 @@ struct DeepLinkParserTests {
 
     @Test func controlCharactersAreRefused() {
         #expect(error("https://example.com/users/a%0Ab") == .invalidValue("segment 2"))
-        #expect(error("patterns://search?q=a%00b") == .invalidValue("q"))
+        #expect(error("patterns://search?q=a%00b") == .invalidValue("query item 1"))
+        #expect(error("patterns://search?q=1&na%0Ame=1") == .invalidValue("query item 2"))
     }
 
-    @Test func errorNamesCarryNoControlCharacters() {
-        #expect(error("patterns://search?na%0Ame=1") == .invalidValue("name"))
+    @Test func errorsCarryNoTextFromTheURL() {
+        let secret = "secret-token-abc123"
+        let urls = [
+            "https://\(secret).test/articles",
+            "\(secret)://articles",
+            "https://example.com/users/\(secret)%0A",
+            "patterns://search?q=\(secret)%00",
+            "patterns://search?\(secret)%0A=1",
+        ]
+        for url in urls {
+            let failure = error(url)
+            #expect(failure != nil, "\(url) was accepted")
+            #expect(!String(describing: failure).contains(secret))
+        }
     }
 
     @Test func limitsAreEnforced() {
