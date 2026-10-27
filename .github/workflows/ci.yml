@@ -1,0 +1,36 @@
+# Managed by the repository kit (muhittincamdali/.github). Edit the inputs, keep the structure.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  swift:
+    permissions:
+      contents: read
+    uses: muhittincamdali/.github/.github/workflows/swift-ci.yml@59e72703c617cfab0c12482c477e706c485ed683 # v1.1.1
+    with:
+      platforms: '["iOS","macOS"]'
+      scheme: MobilePatterns
+      test-on-simulator: true
+
+  flutter:
+    permissions:
+      contents: read
+    uses: muhittincamdali/.github/.github/workflows/flutter-ci.yml@59e72703c617cfab0c12482c477e706c485ed683 # v1.1.1
+    with:
+      working-directory: ports/flutter
+      flutter-version: "3.47.5"
+
+  node:
+    permissions:
+      contents: read
+    uses: muhittincamdali/.github/.github/workflows/node-ci.yml@59e72703c617cfab0c12482c477e706c485ed683 # v1.1.1
+    with:
+      working-directory: ports/react-native
+      node-versions: '["22", "24"]'
