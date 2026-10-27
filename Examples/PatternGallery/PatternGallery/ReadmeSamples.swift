@@ -205,6 +205,15 @@ extension EditCommand where Document == Note {
     }
 }
 
+/// Two edits and one undo: the title stays, the tag is gone, and "Rename" is next to undo.
+func editedNote() -> UndoStack<Note> {
+    var editor = UndoStack(Note(), limit: 20)
+    editor.perform(.rename(to: "Weekend trip", from: editor.document.title))
+    editor.perform(.addTag("travel"))
+    editor.undo()
+    return editor
+}
+
 // MARK: - Observer
 
 enum CartEvent: Equatable, Sendable {

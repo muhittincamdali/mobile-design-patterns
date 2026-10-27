@@ -92,6 +92,13 @@ struct ReadmeSampleTests {
         #expect(editor.document == Note())
     }
 
+    @Test func editedNoteKeepsTheRenameOnly() {
+        let editor = editedNote()
+        #expect(editor.document == Note(title: "Weekend trip"))
+        #expect(editor.undoName == "Rename")
+        #expect(editor.redoName == "Add \"travel\"")
+    }
+
     @Test func cartBadgeFollowsTheBroadcast() async {
         let events = Broadcaster<CartEvent>()
         let badge = CartBadge()
